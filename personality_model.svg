@@ -1,0 +1,328 @@
+<svg width="720" height="610" viewBox="0 0 720 610"
+     xmlns="http://www.w3.org/2000/svg" overflow="visible">
+  <defs>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,600;0,700;0,800;1,700;1,800&display=swap');
+      text { font-family: 'Nunito', 'Segoe UI', sans-serif; }
+
+      /* ══ Большой заголовок: 40с цикл ══
+         0-2.5с стоит, 2.5-3.5с уходит вверх, 3.5-40с скрыт */
+      .bigTitle {
+        transform-origin: 360px 320px;
+        animation: bigTitleLoop 40s 0s infinite;
+      }
+      @keyframes bigTitleLoop {
+        0%     { transform: translateY(0) scale(1);       opacity: 1; }
+        6.25%  { transform: translateY(0) scale(1);       opacity: 1; }
+        8.75%  { transform: translateY(-284px) scale(0.28); opacity: 0; }
+        99.9%  { transform: translateY(-284px) scale(0.28); opacity: 0; }
+        100%   { transform: translateY(0) scale(1);       opacity: 1; }
+      }
+
+      /* ══ Маленький заголовок: 40с цикл ══ */
+      .mainHeader { animation: headerLoop 40s 0s infinite; opacity: 0; }
+      @keyframes headerLoop {
+        0%,  3.5% { opacity: 0; }
+        5%         { opacity: 1; }
+        95%        { opacity: 1; }
+        99%        { opacity: 0; }
+        100%       { opacity: 0; }
+      }
+
+      /* ══ Цикличные фразы: 40с цикл, 9с на цикл, активны 13-40с ══
+         ph1: 13-16с, 22-25с, 31-34с
+         ph2: 16-19с, 25-28с, 34-37с
+         ph3: 19-22с, 28-31с, 37-40с  */
+      .ph1 { opacity: 0; animation: ph1loop 40s 0s infinite; }
+      @keyframes ph1loop {
+        0%,  32%  { opacity: 0; }
+        33.5%      { opacity: 1; }
+        38.5%      { opacity: 1; }
+        40%        { opacity: 0; }
+        54.5%      { opacity: 0; }
+        56%        { opacity: 1; }
+        61%        { opacity: 1; }
+        62.5%      { opacity: 0; }
+        77%        { opacity: 0; }
+        78.5%      { opacity: 1; }
+        83.5%      { opacity: 1; }
+        85%        { opacity: 0; }
+        100%       { opacity: 0; }
+      }
+      .ph2 { opacity: 0; animation: ph2loop 40s 0s infinite; }
+      @keyframes ph2loop {
+        0%,  39.5% { opacity: 0; }
+        41%         { opacity: 1; }
+        46%         { opacity: 1; }
+        47.5%       { opacity: 0; }
+        62%         { opacity: 0; }
+        63.5%       { opacity: 1; }
+        68.5%       { opacity: 1; }
+        70%         { opacity: 0; }
+        84.5%       { opacity: 0; }
+        86%         { opacity: 1; }
+        91%         { opacity: 1; }
+        92.5%       { opacity: 0; }
+        100%        { opacity: 0; }
+      }
+      .ph3 { opacity: 0; animation: ph3loop 40s 0s infinite; }
+      @keyframes ph3loop {
+        0%,  47%  { opacity: 0; }
+        48.5%      { opacity: 1; }
+        53.5%      { opacity: 1; }
+        55%        { opacity: 0; }
+        69.5%      { opacity: 0; }
+        71%        { opacity: 1; }
+        76%        { opacity: 1; }
+        77.5%      { opacity: 0; }
+        92%        { opacity: 0; }
+        93.5%      { opacity: 1; }
+        98.5%      { opacity: 1; }
+        100%       { opacity: 0; }
+      }
+    </style>
+
+    <radialGradient id="goldCenter" cx="50%" cy="50%" r="50%">
+      <stop offset="0%"   stop-color="#FFD700" stop-opacity="1"/>
+      <stop offset="38%"  stop-color="#FFE040" stop-opacity="0.97"/>
+      <stop offset="68%"  stop-color="#FFF0A0" stop-opacity="0.82"/>
+      <stop offset="88%"  stop-color="#FFFBE0" stop-opacity="0.48"/>
+      <stop offset="100%" stop-color="#FFFFFF" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="goldFlash" cx="50%" cy="50%" r="50%">
+      <stop offset="0%"   stop-color="#FFFFFF" stop-opacity="1"/>
+      <stop offset="30%"  stop-color="#FFD700" stop-opacity="1"/>
+      <stop offset="100%" stop-color="#FFD700" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="ts" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="1.5" stdDeviation="3" flood-color="#00000060"/>
+    </filter>
+    <filter id="cs" x="-12%" y="-12%" width="124%" height="124%">
+      <feDropShadow dx="2" dy="4" stdDeviation="7" flood-color="#00000028"/>
+    </filter>
+    <filter id="goldGlow" x="-40%" y="-40%" width="180%" height="180%">
+      <feDropShadow dx="0" dy="0" stdDeviation="3" flood-color="#FFD700" flood-opacity="0.7"/>
+    </filter>
+  </defs>
+
+  <rect width="720" height="610" fill="#FFFFFF"/>
+
+  <!-- ══ МАЛЕНЬКИЙ ЗАГОЛОВОК ══ -->
+  <g class="mainHeader">
+    <text x="360" y="36" text-anchor="middle"
+          font-size="19" font-weight="700" fill="#3A3A3A" letter-spacing="0.5">
+      Раскрытие личности
+    </text>
+    <line x1="110" y1="48" x2="610" y2="48" stroke="#DDDDDD" stroke-width="1"/>
+  </g>
+
+  <!-- ══════════════════════════════════════════════════════════
+       ТРИ КРУГА — fill-opacity 0.78, полный сброс каждые 40с
+       begin сброс: 0s;40s;80s;120s;160s
+       begin движение: 3.5s;43.5s;83.5s;123.5s;163.5s
+       ══════════════════════════════════════════════════════════ -->
+
+  <!-- C1 Коралловый -->
+  <circle cx="360" cy="134" r="165" fill="#D97070" fill-opacity="0.78" filter="url(#cs)">
+    <animate attributeName="cy" to="134" dur="0.01s" fill="freeze"
+             begin="0s; 40s; 80s; 120s; 160s"/>
+    <animate attributeName="cy" values="134; 180; 193; 235"
+             keyTimes="0; 0.45; 0.58; 1"
+             keySplines="0.6 0 0.9 0.4; 0.1 0.2 0.9 0.8; 0 0 1 1"
+             calcMode="spline" dur="6s" fill="freeze"
+             begin="3.5s; 43.5s; 83.5s; 123.5s; 163.5s"/>
+  </circle>
+
+  <!-- C2 Зелёный -->
+  <circle cx="156" cy="466" r="165" fill="#57B374" fill-opacity="0.78" filter="url(#cs)">
+    <animate attributeName="cx" to="156" dur="0.01s" fill="freeze"
+             begin="0s; 40s; 80s; 120s; 160s"/>
+    <animate attributeName="cy" to="466" dur="0.01s" fill="freeze"
+             begin="0s; 40s; 80s; 120s; 160s"/>
+    <animate attributeName="cx" values="156; 195; 207; 243"
+             keyTimes="0; 0.45; 0.58; 1"
+             keySplines="0.6 0 0.9 0.4; 0.1 0.2 0.9 0.8; 0 0 1 1"
+             calcMode="spline" dur="6s" fill="freeze"
+             begin="3.5s; 43.5s; 83.5s; 123.5s; 163.5s"/>
+    <animate attributeName="cy" values="466; 447; 440; 423"
+             keyTimes="0; 0.45; 0.58; 1"
+             keySplines="0.6 0 0.9 0.4; 0.1 0.2 0.9 0.8; 0 0 1 1"
+             calcMode="spline" dur="6s" fill="freeze"
+             begin="3.5s; 43.5s; 83.5s; 123.5s; 163.5s"/>
+  </circle>
+
+  <!-- C3 Синий -->
+  <circle cx="564" cy="466" r="165" fill="#6688CC" fill-opacity="0.78" filter="url(#cs)">
+    <animate attributeName="cx" to="564" dur="0.01s" fill="freeze"
+             begin="0s; 40s; 80s; 120s; 160s"/>
+    <animate attributeName="cy" to="466" dur="0.01s" fill="freeze"
+             begin="0s; 40s; 80s; 120s; 160s"/>
+    <animate attributeName="cx" values="564; 525; 513; 477"
+             keyTimes="0; 0.45; 0.58; 1"
+             keySplines="0.6 0 0.9 0.4; 0.1 0.2 0.9 0.8; 0 0 1 1"
+             calcMode="spline" dur="6s" fill="freeze"
+             begin="3.5s; 43.5s; 83.5s; 123.5s; 163.5s"/>
+    <animate attributeName="cy" values="466; 447; 440; 423"
+             keyTimes="0; 0.45; 0.58; 1"
+             keySplines="0.6 0 0.9 0.4; 0.1 0.2 0.9 0.8; 0 0 1 1"
+             calcMode="spline" dur="6s" fill="freeze"
+             begin="3.5s; 43.5s; 83.5s; 123.5s; 163.5s"/>
+  </circle>
+
+  <!-- ══ ЗОЛОТАЯ ВСПЫШКА — t=7с ══ -->
+  <circle cx="360" cy="360" r="0" fill="url(#goldFlash)" opacity="0">
+    <animate attributeName="opacity" to="0" dur="0.01s" fill="freeze"
+             begin="0s; 40s; 80s; 120s; 160s"/>
+    <animate attributeName="r" to="0" dur="0.01s" fill="freeze"
+             begin="0s; 40s; 80s; 120s; 160s"/>
+    <animate attributeName="opacity" values="0;1;0" keyTimes="0;0.1;1"
+             dur="1.2s" fill="freeze"
+             begin="7s; 47s; 87s; 127s; 167s"/>
+    <animate attributeName="r" values="0;18;0" keyTimes="0;0.1;1"
+             dur="1.2s" fill="freeze"
+             begin="7s; 47s; 87s; 127s; 167s"/>
+  </circle>
+
+  <!-- ══ ЗОЛОТОЙ КРУГ — r=2→100 за 6с (3 фазы по 2с) ══ -->
+  <circle cx="360" cy="360" r="0" fill="url(#goldCenter)" opacity="0">
+    <animate attributeName="opacity" to="0" dur="0.01s" fill="freeze"
+             begin="0s; 40s; 80s; 120s; 160s"/>
+    <animate attributeName="r" to="0" dur="0.01s" fill="freeze"
+             begin="0s; 40s; 80s; 120s; 160s"/>
+    <animate attributeName="opacity" from="0" to="1" dur="0.05s" fill="freeze"
+             begin="7s; 47s; 87s; 127s; 167s"/>
+    <animate attributeName="r" values="2; 33; 67; 100"
+             keyTimes="0; 0.333; 0.667; 1"
+             keySplines="0.4 0 0.6 1; 0.4 0 0.6 1; 0.4 0 0.6 1"
+             calcMode="spline" dur="6s" fill="freeze"
+             begin="7s; 47s; 87s; 127s; 167s"/>
+  </circle>
+
+  <!-- ══ НАЗВАНИЯ КРУГОВ — появляются в 3.5с, золотой кант с 7с ══ -->
+
+  <g opacity="0">
+    <animate attributeName="opacity" to="0" dur="0.01s" fill="freeze"
+             begin="0s; 40s; 80s; 120s; 160s"/>
+    <animate attributeName="opacity" from="0" to="1" dur="0.6s" fill="freeze"
+             begin="3.5s; 43.5s; 83.5s; 123.5s; 163.5s"/>
+    <text x="360" y="183" text-anchor="middle" font-size="30" font-weight="700" font-style="italic"
+          fill="#FFFFFF" filter="url(#ts)"
+          stroke="#FFD700" stroke-width="2.5" stroke-opacity="0" paint-order="stroke fill">
+      Таланты
+      <animate attributeName="stroke-opacity" to="0" dur="0.01s" fill="freeze"
+               begin="0s; 40s; 80s; 120s; 160s"/>
+      <animate attributeName="stroke-opacity" from="0" to="1" dur="6s" fill="freeze"
+               begin="7s; 47s; 87s; 127s; 167s"/>
+    </text>
+    <text x="360" y="218" text-anchor="middle" font-size="26" font-weight="700" font-style="italic"
+          fill="#FFFFFF" filter="url(#ts)"
+          stroke="#FFD700" stroke-width="2.5" stroke-opacity="0" paint-order="stroke fill">
+      и способности
+      <animate attributeName="stroke-opacity" to="0" dur="0.01s" fill="freeze"
+               begin="0s; 40s; 80s; 120s; 160s"/>
+      <animate attributeName="stroke-opacity" from="0" to="1" dur="6s" fill="freeze"
+               begin="7s; 47s; 87s; 127s; 167s"/>
+    </text>
+  </g>
+
+  <g opacity="0">
+    <animate attributeName="opacity" to="0" dur="0.01s" fill="freeze"
+             begin="0s; 40s; 80s; 120s; 160s"/>
+    <animate attributeName="opacity" from="0" to="1" dur="0.6s" fill="freeze"
+             begin="3.5s; 43.5s; 83.5s; 123.5s; 163.5s"/>
+    <text x="210" y="427" text-anchor="middle" font-size="26" font-weight="700" font-style="italic"
+          fill="#FFFFFF" filter="url(#ts)"
+          stroke="#FFD700" stroke-width="2.5" stroke-opacity="0" paint-order="stroke fill">
+      Свойства
+      <animate attributeName="stroke-opacity" to="0" dur="0.01s" fill="freeze"
+               begin="0s; 40s; 80s; 120s; 160s"/>
+      <animate attributeName="stroke-opacity" from="0" to="1" dur="6s" fill="freeze"
+               begin="7s; 47s; 87s; 127s; 167s"/>
+    </text>
+    <text x="210" y="459" text-anchor="middle" font-size="26" font-weight="700" font-style="italic"
+          fill="#FFFFFF" filter="url(#ts)"
+          stroke="#FFD700" stroke-width="2.5" stroke-opacity="0" paint-order="stroke fill">
+      личности
+      <animate attributeName="stroke-opacity" to="0" dur="0.01s" fill="freeze"
+               begin="0s; 40s; 80s; 120s; 160s"/>
+      <animate attributeName="stroke-opacity" from="0" to="1" dur="6s" fill="freeze"
+               begin="7s; 47s; 87s; 127s; 167s"/>
+    </text>
+  </g>
+
+  <g opacity="0">
+    <animate attributeName="opacity" to="0" dur="0.01s" fill="freeze"
+             begin="0s; 40s; 80s; 120s; 160s"/>
+    <animate attributeName="opacity" from="0" to="1" dur="0.6s" fill="freeze"
+             begin="3.5s; 43.5s; 83.5s; 123.5s; 163.5s"/>
+    <text x="511" y="453" text-anchor="middle" font-size="34" font-weight="700" font-style="italic"
+          fill="#FFFFFF" filter="url(#ts)"
+          stroke="#FFD700" stroke-width="2.5" stroke-opacity="0" paint-order="stroke fill">
+      Цели
+      <animate attributeName="stroke-opacity" to="0" dur="0.01s" fill="freeze"
+               begin="0s; 40s; 80s; 120s; 160s"/>
+      <animate attributeName="stroke-opacity" from="0" to="1" dur="6s" fill="freeze"
+               begin="7s; 47s; 87s; 127s; 167s"/>
+    </text>
+  </g>
+
+  <!-- ══ БОЛЬШОЙ ЗАГОЛОВОК — CSS 40с цикл ══ -->
+  <g class="bigTitle">
+    <text x="360" y="285" text-anchor="middle" font-size="68" font-weight="800" fill="#2C2C2C"
+          stroke="#FFD700" stroke-width="3" paint-order="stroke fill">Раскрытие</text>
+    <text x="360" y="370" text-anchor="middle" font-size="68" font-weight="800" fill="#2C2C2C"
+          stroke="#FFD700" stroke-width="3" paint-order="stroke fill">личности</text>
+  </g>
+
+  <!-- ══ ТЕКСТ РОСТА — три фазы по 2с (7-13с) ══ -->
+
+  <g opacity="0">
+    <animate attributeName="opacity" to="0" dur="0.01s" fill="freeze"
+             begin="0s; 40s; 80s; 120s; 160s"/>
+    <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.15;0.85;1"
+             dur="2s" fill="freeze"
+             begin="7s; 47s; 87s; 127s; 167s"/>
+    <text x="360" y="365" text-anchor="middle" font-size="20" font-weight="700" font-style="italic"
+          fill="#7A5000" filter="url(#goldGlow)">Твоя суть</text>
+  </g>
+
+  <g opacity="0">
+    <animate attributeName="opacity" to="0" dur="0.01s" fill="freeze"
+             begin="0s; 40s; 80s; 120s; 160s"/>
+    <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.15;0.85;1"
+             dur="2s" fill="freeze"
+             begin="9s; 49s; 89s; 129s; 169s"/>
+    <text x="360" y="354" text-anchor="middle" font-size="17" font-weight="700" font-style="italic"
+          fill="#7A5000" filter="url(#goldGlow)">Твоя точка</text>
+    <text x="360" y="375" text-anchor="middle" font-size="17" font-weight="700" font-style="italic"
+          fill="#7A5000" filter="url(#goldGlow)">силы</text>
+  </g>
+
+  <g opacity="0">
+    <animate attributeName="opacity" to="0" dur="0.01s" fill="freeze"
+             begin="0s; 40s; 80s; 120s; 160s"/>
+    <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.15;0.85;1"
+             dur="2s" fill="freeze"
+             begin="11s; 51s; 91s; 131s; 171s"/>
+    <text x="360" y="354" text-anchor="middle" font-size="15" font-weight="700" font-style="italic"
+          fill="#7A5000" filter="url(#goldGlow)">Твоё</text>
+    <text x="360" y="374" text-anchor="middle" font-size="15" font-weight="700" font-style="italic"
+          fill="#7A5000" filter="url(#goldGlow)">предназначение</text>
+  </g>
+
+  <!-- ══ ЦИКЛИЧНЫЕ ФРАЗЫ (CSS 40с цикл, активны 13-40с) ══ -->
+
+  <text class="ph1" x="360" y="365" text-anchor="middle"
+        font-size="20" font-weight="700" font-style="italic" fill="#7A5000">Твоя суть</text>
+
+  <text class="ph2" x="360" y="354" text-anchor="middle"
+        font-size="17" font-weight="700" font-style="italic" fill="#7A5000">Твоя точка</text>
+  <text class="ph2" x="360" y="375" text-anchor="middle"
+        font-size="17" font-weight="700" font-style="italic" fill="#7A5000">силы</text>
+
+  <text class="ph3" x="360" y="354" text-anchor="middle"
+        font-size="15" font-weight="700" font-style="italic" fill="#7A5000">Твоё</text>
+  <text class="ph3" x="360" y="374" text-anchor="middle"
+        font-size="15" font-weight="700" font-style="italic" fill="#7A5000">предназначение</text>
+
+</svg>
