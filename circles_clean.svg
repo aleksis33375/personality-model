@@ -1,0 +1,30 @@
+<svg width="560" height="520" viewBox="0 0 560 520"
+     xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <radialGradient id="goldCenter" cx="50%" cy="50%" r="50%">
+      <stop offset="0%"   stop-color="#FFD700" stop-opacity="1"/>
+      <stop offset="35%"  stop-color="#FFE040" stop-opacity="0.97"/>
+      <stop offset="65%"  stop-color="#FFF0A0" stop-opacity="0.82"/>
+      <stop offset="88%"  stop-color="#FFFBE0" stop-opacity="0.48"/>
+      <stop offset="100%" stop-color="#FFFFFF" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="cs" x="-12%" y="-12%" width="124%" height="124%">
+      <feDropShadow dx="2" dy="4" stdDeviation="7" flood-color="#00000028"/>
+    </filter>
+  </defs>
+
+  <rect width="560" height="520" fill="#FFFFFF"/>
+
+  <!-- Коралловый — сверху по центру -->
+  <circle cx="280" cy="175" r="165" fill="#D97070" fill-opacity="0.78" filter="url(#cs)"/>
+
+  <!-- Зелёный — снизу слева -->
+  <circle cx="163" cy="365" r="165" fill="#57B374" fill-opacity="0.78" filter="url(#cs)"/>
+
+  <!-- Синий — снизу справа -->
+  <circle cx="397" cy="365" r="165" fill="#6688CC" fill-opacity="0.78" filter="url(#cs)"/>
+
+  <!-- Золотое пятно в центре -->
+  <circle cx="280" cy="300" r="80" fill="url(#goldCenter)"/>
+
+</svg>
