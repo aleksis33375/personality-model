@@ -1,0 +1,1575 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Программа раскрытия личности · Вайбкодинг</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --coral: #D97070;
+      --green: #57B374;
+      --blue: #6688CC;
+      --gold: #FFD700;
+      --dark: #080810;
+      --dark2: #0e0e1a;
+      --text: #e8e8f0;
+      --muted: #8888aa;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--dark);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* ── ФОНОВЫЕ БЛОБЫ ── */
+    .blobs {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      overflow: hidden;
+    }
+    .blob {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(90px);
+      opacity: 0.20;
+      animation: blobDrift 18s ease-in-out infinite alternate;
+    }
+    .blob-1 { width: 700px; height: 700px; background: var(--coral); top: -200px; left: -200px; animation-delay: 0s; }
+    .blob-2 { width: 600px; height: 600px; background: var(--blue);  bottom: -200px; right: -150px; animation-delay: -9s; }
+    .blob-3 { width: 400px; height: 400px; background: var(--green); top: 40%; left: 50%; transform: translateX(-50%); animation-delay: -4s; }
+    .blob-4 { width: 500px; height: 500px; background: #5b3fa6; top: 5%; left: 25%; animation-delay: -2s; opacity: 0.20; }
+
+    @keyframes blobDrift {
+      from { transform: translate(0, 0) scale(1); }
+      to   { transform: translate(40px, 30px) scale(1.1); }
+    }
+
+    /* ── ОБЁРТКА ── */
+    .wrapper {
+      position: relative;
+      z-index: 1;
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 0 1.5rem;
+    }
+
+    /* ══════════════════════════════
+       HERO
+    ══════════════════════════════ */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 5rem 1.5rem 4rem;
+    }
+
+    .badge {
+      display: inline-block;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--gold);
+      border: 1px solid rgba(255,215,0,0.3);
+      background: rgba(255,215,0,0.07);
+      padding: 0.35rem 1rem;
+      border-radius: 2rem;
+      margin-bottom: 2rem;
+      animation: fadeUp 0.6s ease both;
+    }
+
+    .hero-title {
+      font-size: clamp(2rem, 6vw, 3.8rem);
+      font-weight: 800;
+      line-height: 1.15;
+      letter-spacing: -1px;
+      margin-bottom: 1.5rem;
+      animation: fadeUp 0.7s 0.1s ease both;
+    }
+
+    .grad-text {
+      background: linear-gradient(90deg, var(--coral), var(--gold), var(--green));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero-sub {
+      font-size: clamp(1rem, 2.5vw, 1.2rem);
+      color: var(--muted);
+      max-width: 620px;
+      margin: 0 auto 1.5rem;
+      animation: fadeUp 0.7s 0.2s ease both;
+    }
+
+    .hero-desc {
+      font-size: clamp(0.9rem, 2vw, 1.05rem);
+      color: #aab0cc;
+      max-width: 580px;
+      margin: 0 auto 3rem;
+      animation: fadeUp 0.7s 0.3s ease both;
+    }
+
+    .venn {
+      width: min(280px, 70vw);
+      height: min(240px, 60vw);
+      position: relative;
+      margin: 0 auto 3.5rem;
+      animation: fadeUp 0.8s 0.15s ease both;
+    }
+
+    .venn svg { width: 100%; height: 100%; }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── CTA КНОПКА ── */
+    .cta-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+      animation: fadeUp 0.7s 0.4s ease both;
+    }
+
+    .cta-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      padding: 1rem 2.4rem;
+      border-radius: 3rem;
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: #fff;
+      text-decoration: none;
+      background: linear-gradient(135deg, var(--coral), var(--blue));
+      box-shadow: 0 0 0 0 rgba(217, 112, 112, 0.5);
+      animation: pulse-cta 2.5s ease-in-out infinite;
+      transition: transform 0.2s, box-shadow 0.2s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .cta-btn::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(255,255,255,0.12), transparent);
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+
+    .cta-btn:hover { transform: translateY(-2px) scale(1.03); }
+    .cta-btn:hover::after { opacity: 1; }
+    .cta-btn:active { transform: scale(0.97); }
+
+    @keyframes pulse-cta {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(217,112,112,0.4), 0 8px 32px rgba(102,136,204,0.35); }
+      50%       { box-shadow: 0 0 0 14px rgba(217,112,112,0), 0 8px 40px rgba(102,136,204,0.5); }
+    }
+
+    .cta-btn svg { width: 20px; height: 20px; fill: currentColor; flex-shrink: 0; }
+
+    .cta-link {
+      font-size: 0.85rem;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .cta-link:hover { color: var(--blue); }
+
+    /* ══════════════════════════════
+       СЕКЦИИ
+    ══════════════════════════════ */
+    .section { padding: 5rem 0; }
+    .sect-surface { background: var(--dark2); }
+
+    .section-label {
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 1rem;
+    }
+
+    .section-title {
+      font-size: clamp(1.6rem, 4vw, 2.4rem);
+      font-weight: 800;
+      line-height: 1.2;
+      margin-bottom: 1.5rem;
+      letter-spacing: -0.5px;
+    }
+
+    .problem-text {
+      font-size: 1.05rem;
+      color: #aab0cc;
+      max-width: 640px;
+      margin-bottom: 1rem;
+    }
+
+    .problem-quote {
+      margin: 2.5rem 0;
+      padding: 1.5rem 2rem;
+      border-left: 3px solid var(--gold);
+      background: rgba(255,215,0,0.04);
+      border-radius: 0 0.75rem 0.75rem 0;
+      font-size: 1.1rem;
+      font-style: italic;
+      color: #d4c88a;
+      line-height: 1.7;
+    }
+
+    /* ══════════════════════════════
+       КАРТОЧКИ ПРЕИМУЩЕСТВ
+    ══════════════════════════════ */
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1.25rem;
+      margin-top: 3rem;
+    }
+
+    .card {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 1.25rem;
+      padding: 2rem 1.75rem;
+      transition: transform 0.25s, box-shadow 0.25s, border-color 0.25s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .card:hover { transform: translateY(-6px); }
+
+    .card.c-coral { --clr: var(--coral); border-left: 2px solid rgba(217,112,112,0.35); }
+    .card.c-green  { --clr: var(--green); }
+    .card.c-blue   { --clr: var(--blue); }
+
+    .card.c-coral:hover { box-shadow: 0 12px 40px rgba(217,112,112,0.15); border-color: rgba(217,112,112,0.3); }
+    .card.c-green:hover  { box-shadow: 0 12px 40px rgba(87,179,116,0.15);  border-color: rgba(87,179,116,0.3); }
+    .card.c-blue:hover   { box-shadow: 0 12px 40px rgba(102,136,204,0.15); border-color: rgba(102,136,204,0.3); }
+
+    .card-icon {
+      width: 52px;
+      height: 52px;
+      border-radius: 0.875rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1.25rem;
+    }
+
+    .card.c-coral .card-icon { background: rgba(217,112,112,0.12); color: var(--coral); }
+    .card.c-green  .card-icon { background: rgba(87,179,116,0.08);  color: var(--green); opacity: 0.88; }
+    .card.c-blue   .card-icon { background: rgba(102,136,204,0.08); color: var(--blue);  opacity: 0.88; }
+
+    .card-icon svg { width: 26px; height: 26px; fill: currentColor; }
+
+    .card-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 0.6rem;
+      line-height: 1.3;
+    }
+
+    .card-text {
+      font-size: 0.9rem;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    /* ══════════════════════════════
+       ДЛЯ КОГО
+    ══════════════════════════════ */
+    .for-whom {
+      background: rgba(255,255,255,0.02);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 1.5rem;
+      padding: 3rem 2.5rem;
+      margin-top: 5rem;
+    }
+
+    .for-list {
+      list-style: none;
+      margin-top: 1.5rem;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 0.75rem;
+    }
+
+    .for-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+      font-size: 0.95rem;
+      color: #aab0cc;
+      line-height: 1.5;
+    }
+
+    .check-icon {
+      flex-shrink: 0;
+      width: 20px;
+      height: 20px;
+      margin-top: 2px;
+    }
+
+    /* ══════════════════════════════
+       ЦИФРЫ
+    ══════════════════════════════ */
+    .benefits {
+      margin-top: 5rem;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1.5rem;
+      text-align: center;
+    }
+
+    .benefit-num {
+      font-size: 2.4rem;
+      font-weight: 800;
+      background: linear-gradient(90deg, var(--coral), var(--gold));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      line-height: 1;
+      margin-bottom: 0.4rem;
+    }
+
+    .benefit-label {
+      font-size: 0.88rem;
+      color: var(--muted);
+      line-height: 1.4;
+    }
+
+    /* ── БЛОК ПРОДУКТОВ ── */
+    .products-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 0.875rem;
+      margin-top: 2rem;
+    }
+
+    .product-tag {
+      background: rgba(255,255,255,0.025);
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 0.875rem;
+      padding: 1rem 1.25rem;
+      font-size: 0.88rem;
+      line-height: 1.5;
+    }
+
+    .product-tag .pt-name {
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 0.2rem;
+    }
+
+    .product-tag .pt-note {
+      font-size: 0.78rem;
+      color: var(--muted);
+    }
+
+    .product-tag.pt-coral { border-left: 2px solid rgba(217,112,112,0.4); }
+    .product-tag.pt-green  { border-left: 2px solid rgba(87,179,116,0.4); }
+    .product-tag.pt-blue   { border-left: 2px solid rgba(102,136,204,0.4); }
+    .product-tag.pt-gold   { border-left: 2px solid rgba(255,215,0,0.4); }
+
+    /* ══════════════════════════════
+       ФИНАЛЬНЫЙ CTA
+    ══════════════════════════════ */
+    .final-cta {
+      text-align: center;
+      padding: 6rem 1.5rem;
+    }
+
+    .final-cta .section-title { margin-bottom: 1rem; }
+    .final-cta .hero-desc { margin-bottom: 2.5rem; animation: none; }
+
+    /* ══════════════════════════════
+       ВИЗУАЛИЗАЦИЯ КРУГОВ
+    ══════════════════════════════ */
+    .visual-section { padding: 4rem 0 2rem; }
+
+    .visual-wrap {
+      max-width: 520px;
+      margin: 0 auto;
+      position: relative;
+    }
+
+    .visual-wrap svg { width: 100%; height: auto; display: block; }
+
+    .visual-caption {
+      text-align: center;
+      margin-top: 1.5rem;
+      font-size: 0.88rem;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    /* ── РАЗДЕЛИТЕЛЬ ── */
+    .divider {
+      width: 60px;
+      height: 3px;
+      border-radius: 2px;
+      background: linear-gradient(90deg, var(--coral), var(--blue));
+      margin: 1.5rem 0;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      text-align: center;
+      padding: 2rem;
+      font-size: 0.78rem;
+      color: #44445a;
+      border-top: 1px solid rgba(255,255,255,0.04);
+    }
+
+    /* ══════════════════════════════
+       КВИЗ-КАЛЬКУЛЯТОР
+    ══════════════════════════════ */
+    .quiz-section { padding: 5rem 0; }
+
+    .quiz-box {
+      background: rgba(255,255,255,0.02);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 1.75rem;
+      padding: 3rem 2.5rem;
+      max-width: 680px;
+      margin: 0 auto;
+    }
+
+    .quiz-progress {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 2.5rem;
+    }
+
+    .progress-track {
+      flex: 1;
+      height: 4px;
+      background: rgba(255,255,255,0.07);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      border-radius: 2px;
+      background: linear-gradient(90deg, var(--coral), var(--gold), var(--green));
+      transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .progress-label {
+      font-size: 0.78rem;
+      color: var(--muted);
+      white-space: nowrap;
+    }
+
+    .step-dots {
+      display: flex;
+      gap: 0.5rem;
+      justify-content: center;
+      margin-bottom: 2rem;
+    }
+
+    .step-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.12);
+      transition: all 0.3s;
+    }
+
+    .step-dot.active { width: 24px; border-radius: 4px; }
+    .step-dot.done { background: var(--green); }
+    .step-dot.active.dot-coral { background: var(--coral); }
+    .step-dot.active.dot-green { background: var(--green); }
+    .step-dot.active.dot-blue  { background: var(--blue); }
+
+    .quiz-step { display: none; }
+    .quiz-step.active { display: block; animation: fadeUp 0.4s ease both; }
+
+    .step-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 0.25rem 0.75rem;
+      border-radius: 2rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .step-tag.coral { color: var(--coral); background: rgba(217,112,112,0.1); border: 1px solid rgba(217,112,112,0.2); }
+    .step-tag.green  { color: var(--green); background: rgba(87,179,116,0.1);  border: 1px solid rgba(87,179,116,0.2); }
+    .step-tag.blue   { color: var(--blue);  background: rgba(102,136,204,0.1); border: 1px solid rgba(102,136,204,0.2); }
+
+    .step-question {
+      font-size: clamp(1.15rem, 3vw, 1.5rem);
+      font-weight: 700;
+      line-height: 1.35;
+      margin-bottom: 0.75rem;
+      letter-spacing: -0.3px;
+    }
+
+    .step-hint {
+      font-size: 0.88rem;
+      color: var(--muted);
+      margin-bottom: 1.75rem;
+      line-height: 1.5;
+    }
+
+    .quiz-input {
+      width: 100%;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 0.875rem;
+      padding: 1rem 1.25rem;
+      color: var(--text);
+      font-size: 1rem;
+      font-family: inherit;
+      line-height: 1.5;
+      resize: none;
+      min-height: 110px;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      outline: none;
+    }
+
+    .quiz-input:focus {
+      border-color: rgba(255,215,0,0.35);
+      box-shadow: 0 0 0 3px rgba(255,215,0,0.07);
+    }
+
+    .quiz-input::placeholder { color: #55556a; }
+
+    .chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-top: 0.875rem;
+    }
+
+    .chip {
+      font-size: 0.78rem;
+      color: var(--muted);
+      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(255,255,255,0.03);
+      padding: 0.28rem 0.7rem;
+      border-radius: 2rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      user-select: none;
+    }
+
+    .chip:hover { color: var(--text); border-color: rgba(255,255,255,0.2); background: rgba(255,255,255,0.07); }
+    .chip.selected { color: #fff; border-color: var(--gold); background: rgba(255,215,0,0.1); }
+
+    .quiz-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 2rem;
+    }
+
+    .btn-back {
+      font-size: 0.88rem;
+      color: var(--muted);
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 0.5rem 0;
+      transition: color 0.2s;
+      font-family: inherit;
+    }
+
+    .btn-back:hover { color: var(--text); }
+
+    .btn-next {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.85rem 2rem;
+      border-radius: 3rem;
+      border: none;
+      cursor: pointer;
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: #fff;
+      font-family: inherit;
+      background: linear-gradient(135deg, var(--coral), var(--blue));
+      box-shadow: 0 4px 20px rgba(102,136,204,0.3);
+      transition: transform 0.2s, box-shadow 0.2s, opacity 0.2s;
+    }
+
+    .btn-next:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(102,136,204,0.45); }
+    .btn-next:active { transform: scale(0.97); }
+    .btn-next:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+    .btn-next svg { width: 18px; height: 18px; fill: currentColor; }
+
+    /* ══ РЕЗУЛЬТАТ ══ */
+    .quiz-result { display: none; animation: fadeUp 0.5s ease both; }
+    .quiz-result.active { display: block; }
+
+    .result-header { text-align: center; margin-bottom: 2.5rem; }
+
+    .result-badge {
+      display: inline-block;
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--gold);
+      border: 1px solid rgba(255,215,0,0.3);
+      background: rgba(255,215,0,0.07);
+      padding: 0.3rem 0.9rem;
+      border-radius: 2rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .result-title {
+      font-size: clamp(1.3rem, 3.5vw, 2rem);
+      font-weight: 800;
+      line-height: 1.2;
+      letter-spacing: -0.5px;
+      margin-bottom: 0.75rem;
+    }
+
+    .result-venn {
+      position: relative;
+      max-width: 480px;
+      margin: 0 auto 2.5rem;
+    }
+
+    .result-venn svg { width: 100%; height: auto; }
+
+    .result-blocks {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    .result-block {
+      border-radius: 1rem;
+      padding: 1.25rem 1rem;
+      text-align: center;
+    }
+
+    .result-block.rb-coral { background: rgba(217,112,112,0.08); border: 1px solid rgba(217,112,112,0.2); }
+    .result-block.rb-green { background: rgba(87,179,116,0.08);  border: 1px solid rgba(87,179,116,0.2); }
+    .result-block.rb-blue  { background: rgba(102,136,204,0.08); border: 1px solid rgba(102,136,204,0.2); }
+
+    .rb-label {
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 0.5rem;
+    }
+
+    .rb-coral .rb-label { color: var(--coral); }
+    .rb-green  .rb-label { color: var(--green); }
+    .rb-blue   .rb-label { color: var(--blue); }
+
+    .rb-value {
+      font-size: 0.85rem;
+      color: var(--text);
+      line-height: 1.45;
+      font-weight: 500;
+    }
+
+    .result-formula {
+      background: linear-gradient(135deg, rgba(255,215,0,0.06), rgba(217,112,112,0.06));
+      border: 1px solid rgba(255,215,0,0.2);
+      border-radius: 1.25rem;
+      padding: 1.75rem;
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .formula-label {
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 0.875rem;
+    }
+
+    .formula-text {
+      font-size: clamp(0.95rem, 2.5vw, 1.15rem);
+      font-weight: 600;
+      color: #e8d88a;
+      line-height: 1.6;
+      font-style: italic;
+    }
+
+    .result-cta {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.875rem;
+    }
+
+    .btn-restart {
+      font-size: 0.82rem;
+      color: var(--muted);
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-family: inherit;
+      transition: color 0.2s;
+    }
+
+    .btn-restart:hover { color: var(--text); }
+
+    /* ── ЗОНА ГЕНИЯ ── */
+    .genius-zone {
+      margin-bottom: 2rem;
+      border-radius: 1.25rem;
+      overflow: hidden;
+      border: 1px solid rgba(255,215,0,0.15);
+    }
+
+    .gz-header {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 1.25rem 1.5rem;
+      background: linear-gradient(135deg, rgba(255,215,0,0.08), rgba(217,112,112,0.05));
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .gz-icon { font-size: 1.6rem; flex-shrink: 0; line-height: 1; }
+    .gz-label {
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 0.2rem;
+    }
+
+    .gz-name { font-size: 1.15rem; font-weight: 800; color: var(--text); line-height: 1.2; }
+
+    .gz-body { padding: 1.25rem 1.5rem; background: rgba(255,255,255,0.015); }
+
+    .gz-sentence {
+      font-size: 0.95rem;
+      font-style: italic;
+      color: #e8d88a;
+      font-weight: 600;
+      line-height: 1.55;
+      margin-bottom: 0.75rem;
+    }
+
+    .gz-desc { font-size: 0.88rem; color: var(--muted); line-height: 1.6; }
+
+    /* ── АДАПТИВ ── */
+    @media (max-width: 600px) {
+      .hero { padding: 4rem 1rem 3rem; }
+      .for-whom { padding: 2rem 1.25rem; }
+      .section { padding: 3.5rem 0; }
+      .quiz-box { padding: 2rem 1.25rem; }
+      .result-blocks { grid-template-columns: 1fr; }
+      .products-grid { grid-template-columns: 1fr; }
+    }
+
+    /* ── HIGH-CONTRAST ── */
+    @media (prefers-contrast: more) {
+      :root { --muted: #b8b8cc; --text: #f4f4fc; }
+      .hero-sub, .hero-desc, .problem-text, .card-text,
+      .for-list li, .step-hint, .gz-desc, .benefit-label,
+      .visual-caption, .progress-label { color: #c0c4d8; }
+      .card, .quiz-box { border-color: rgba(255,255,255,0.18); }
+      footer { color: #888899; }
+    }
+
+    @media (forced-colors: active) {
+      .badge, .result-badge { border: 1px solid ButtonText; background: ButtonFace; color: ButtonText; }
+      .cta-btn, .btn-next { background: Highlight; color: HighlightText; forced-color-adjust: none; }
+      .card { border: 1px solid ButtonText; }
+      .blob { display: none; }
+      .grad-text { -webkit-text-fill-color: unset; background: none; color: Highlight; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="blobs">
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+  <div class="blob blob-3"></div>
+  <div class="blob blob-4"></div>
+</div>
+
+<!-- ══ HERO ══ -->
+<section class="hero">
+  <div class="wrapper">
+
+    <span class="badge">Программа раскрытия личности · Вайбкодинг</span>
+
+    <h1 class="hero-title">
+      Ты чувствуешь силу ИИ —<br>
+      но не знаешь, какой<br>
+      <span class="grad-text">цифровой продукт создавать</span>
+    </h1>
+
+    <p class="hero-sub">
+      Дело не в нехватке инструментов и не в отсутствии идей.
+      Твои таланты, характер и цели просто ещё не встретились в одной точке.
+    </p>
+
+    <p class="hero-desc">
+      Структурированная программа, которая находит точку пересечения твоей природы
+      и ИИ-возможностей — место, откуда начинается твой цифровой продукт.
+    </p>
+
+  </div>
+</section>
+
+<!-- ══ ВИЗУАЛИЗАЦИЯ ══ -->
+<section class="visual-section sect-surface">
+  <div class="wrapper">
+    <div class="visual-wrap">
+      <svg viewBox="0 0 560 520" xmlns="http://www.w3.org/2000/svg" overflow="visible">
+        <defs>
+          <style>
+            .vc-label { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
+            .vc-gold-pulse { animation: vcGoldPulse 15s 0s infinite; opacity: 0; }
+            @keyframes vcGoldPulse {
+              0%, 30% { opacity: 0; } 38% { opacity: 1; }
+              80% { opacity: 0.9; } 90% { opacity: 0; } 100% { opacity: 0; }
+            }
+          </style>
+          <radialGradient id="vcGold" cx="50%" cy="50%" r="50%">
+            <stop offset="0%"   stop-color="#FFD700" stop-opacity="1"/>
+            <stop offset="35%"  stop-color="#FFE040" stop-opacity="0.95"/>
+            <stop offset="65%"  stop-color="#FFF0A0" stop-opacity="0.7"/>
+            <stop offset="88%"  stop-color="#FFFBE0" stop-opacity="0.3"/>
+            <stop offset="100%" stop-color="#FFFFFF" stop-opacity="0"/>
+          </radialGradient>
+          <radialGradient id="vcFlash" cx="50%" cy="50%" r="50%">
+            <stop offset="0%"   stop-color="#FFFFFF" stop-opacity="1"/>
+            <stop offset="30%"  stop-color="#FFD700" stop-opacity="1"/>
+            <stop offset="100%" stop-color="#FFD700" stop-opacity="0"/>
+          </radialGradient>
+          <filter id="vcShadow" x="-15%" y="-15%" width="130%" height="130%">
+            <feDropShadow dx="2" dy="4" stdDeviation="8" flood-color="#00000035"/>
+          </filter>
+          <filter id="vcGlow" x="-40%" y="-40%" width="180%" height="180%">
+            <feDropShadow dx="0" dy="0" stdDeviation="4" flood-color="#FFD700" flood-opacity="0.6"/>
+          </filter>
+        </defs>
+
+        <circle cx="280" cy="175" r="165" fill="#D97070" fill-opacity="0.78" filter="url(#vcShadow)">
+          <animate attributeName="cy" to="50" dur="0.01s" fill="freeze" begin="0s; 15s; 30s; 45s; 60s"/>
+          <animate attributeName="cy" values="50; 130; 155; 175" keyTimes="0; 0.45; 0.65; 1"
+                   keySplines="0.6 0 0.9 0.4; 0.1 0.2 0.9 0.8; 0 0 1 1"
+                   calcMode="spline" dur="5s" fill="freeze" begin="0.5s; 15.5s; 30.5s; 45.5s; 60.5s"/>
+        </circle>
+
+        <circle cx="163" cy="365" r="165" fill="#57B374" fill-opacity="0.78" filter="url(#vcShadow)">
+          <animate attributeName="cx" to="50"  dur="0.01s" fill="freeze" begin="0s; 15s; 30s; 45s; 60s"/>
+          <animate attributeName="cy" to="460" dur="0.01s" fill="freeze" begin="0s; 15s; 30s; 45s; 60s"/>
+          <animate attributeName="cx" values="50; 110; 135; 163" keyTimes="0; 0.45; 0.65; 1"
+                   keySplines="0.6 0 0.9 0.4; 0.1 0.2 0.9 0.8; 0 0 1 1"
+                   calcMode="spline" dur="5s" fill="freeze" begin="0.5s; 15.5s; 30.5s; 45.5s; 60.5s"/>
+          <animate attributeName="cy" values="460; 415; 395; 365" keyTimes="0; 0.45; 0.65; 1"
+                   keySplines="0.6 0 0.9 0.4; 0.1 0.2 0.9 0.8; 0 0 1 1"
+                   calcMode="spline" dur="5s" fill="freeze" begin="0.5s; 15.5s; 30.5s; 45.5s; 60.5s"/>
+        </circle>
+
+        <circle cx="397" cy="365" r="165" fill="#6688CC" fill-opacity="0.78" filter="url(#vcShadow)">
+          <animate attributeName="cx" to="510" dur="0.01s" fill="freeze" begin="0s; 15s; 30s; 45s; 60s"/>
+          <animate attributeName="cy" to="460" dur="0.01s" fill="freeze" begin="0s; 15s; 30s; 45s; 60s"/>
+          <animate attributeName="cx" values="510; 450; 425; 397" keyTimes="0; 0.45; 0.65; 1"
+                   keySplines="0.6 0 0.9 0.4; 0.1 0.2 0.9 0.8; 0 0 1 1"
+                   calcMode="spline" dur="5s" fill="freeze" begin="0.5s; 15.5s; 30.5s; 45.5s; 60.5s"/>
+          <animate attributeName="cy" values="460; 415; 395; 365" keyTimes="0; 0.45; 0.65; 1"
+                   keySplines="0.6 0 0.9 0.4; 0.1 0.2 0.9 0.8; 0 0 1 1"
+                   calcMode="spline" dur="5s" fill="freeze" begin="0.5s; 15.5s; 30.5s; 45.5s; 60.5s"/>
+        </circle>
+
+        <circle cx="280" cy="300" r="0" fill="url(#vcFlash)" opacity="0">
+          <animate attributeName="opacity" to="0" dur="0.01s" fill="freeze" begin="0s; 15s; 30s; 45s; 60s"/>
+          <animate attributeName="r" to="0" dur="0.01s" fill="freeze" begin="0s; 15s; 30s; 45s; 60s"/>
+          <animate attributeName="opacity" values="0;1;0" keyTimes="0;0.15;1" dur="1.5s" fill="freeze" begin="5.5s; 20.5s; 35.5s; 50.5s; 65.5s"/>
+          <animate attributeName="r" values="0;28;0" keyTimes="0;0.15;1" dur="1.5s" fill="freeze" begin="5.5s; 20.5s; 35.5s; 50.5s; 65.5s"/>
+        </circle>
+
+        <circle cx="280" cy="300" r="0" fill="url(#vcGold)" class="vc-gold-pulse">
+          <animate attributeName="r" to="0" dur="0.01s" fill="freeze" begin="0s; 15s; 30s; 45s; 60s"/>
+          <animate attributeName="r" values="0; 50; 75; 90" keyTimes="0; 0.33; 0.67; 1"
+                   keySplines="0.4 0 0.6 1; 0.4 0 0.6 1; 0.4 0 0.6 1"
+                   calcMode="spline" dur="3s" fill="freeze" begin="5.5s; 20.5s; 35.5s; 50.5s; 65.5s"/>
+          <animate attributeName="r" values="90;96;90" dur="2.5s" repeatCount="indefinite" begin="8.5s; 23.5s; 38.5s; 53.5s; 68.5s"/>
+        </circle>
+
+        <g class="vc-labels">
+          <text class="vc-label" x="280" y="148" text-anchor="middle" font-size="20" font-weight="700" font-style="italic" fill="#FFFFFF" style="filter: drop-shadow(0 1.5px 3px #00000060)">Таланты</text>
+          <text class="vc-label" x="280" y="172" text-anchor="middle" font-size="16" font-weight="600" font-style="italic" fill="#FFFFFF" opacity="0.85" style="filter: drop-shadow(0 1.5px 3px #00000060)">и цифровые навыки</text>
+
+          <text class="vc-label" x="163" y="362" text-anchor="middle" font-size="18" font-weight="700" font-style="italic" fill="#FFFFFF" style="filter: drop-shadow(0 1.5px 3px #00000060)">Свойства</text>
+          <text class="vc-label" x="163" y="385" text-anchor="middle" font-size="18" font-weight="700" font-style="italic" fill="#FFFFFF" opacity="0.85" style="filter: drop-shadow(0 1.5px 3px #00000060)">личности</text>
+
+          <text class="vc-label" x="397" y="375" text-anchor="middle" font-size="22" font-weight="700" font-style="italic" fill="#FFFFFF" style="filter: drop-shadow(0 1.5px 3px #00000060)">Цели</text>
+
+          <text class="vc-label" x="280" y="290" text-anchor="middle" font-size="14" font-weight="800" fill="#7A4500" filter="url(#vcGlow)">Твой продукт</text>
+          <text class="vc-label" x="280" y="310" text-anchor="middle" font-size="12" font-weight="700" fill="#7A4500" filter="url(#vcGlow)">· точка силы ·</text>
+        </g>
+      </svg>
+    </div>
+    <p class="visual-caption">
+      Таланты и навыки, свойства личности и цели — существуют отдельно.<br>
+      Программа находит точку, где они складываются в конкретный цифровой продукт.
+    </p>
+
+    <div class="cta-wrap" style="margin-top:2.5rem;">
+      <a class="cta-btn" href="#quiz" onclick="document.getElementById('quiz').scrollIntoView({behavior:'smooth'});return false;">
+        <svg viewBox="0 0 24 24" fill="currentColor" style="width:20px;height:20px;">
+          <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+        </svg>
+        Найти свой цифровой продукт
+      </a>
+      <a class="cta-link" href="https://t.me/aleks33375" target="_blank" rel="noopener">
+        Написать напрямую → @aleks33375
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ══ ПРОБЛЕМА ══ -->
+<section class="section">
+  <div class="wrapper">
+    <p class="section-label">Почему так происходит</p>
+    <h2 class="section-title">Проблема не в ИИ.<br>Проблема в <span class="grad-text">разрыве</span></h2>
+    <div class="divider"></div>
+    <p class="problem-text">
+      Большинство людей видят возможности ИИ: автоматизацию, контент, продукты. Они знают о своих
+      сильных сторонах. Но инструмент без понимания своей природы — это хаос, а не бизнес.
+    </p>
+    <p class="problem-text">
+      Именно поэтому умный, энергичный человек с доступом к лучшим ИИ-инструментам
+      может месяцами пробовать разное — и при этом не двигаться туда, куда нужно.
+    </p>
+    <div class="problem-quote">
+      «Вайбкодинг — это не про нейросети. Это про то, чтобы твои таланты, характер и цели
+      наконец нашли форму цифрового продукта, который работает именно на тебя.»
+    </div>
+
+    <!-- ══ ЧТО СОЗДАЁТ ВАЙБКОДЕР ══ -->
+    <p class="section-label" style="margin-top:3rem;">Что строит вайбкодер</p>
+    <h2 class="section-title">Цифровые продукты<br>под <span class="grad-text">твою природу</span></h2>
+
+    <div class="products-grid">
+      <div class="product-tag pt-coral">
+        <div class="pt-name">ИИ-ассистенты</div>
+        <div class="pt-note">персональный GPT под нишу — юрист, коуч, маркетолог</div>
+      </div>
+      <div class="product-tag pt-green">
+        <div class="pt-name">Системы контента</div>
+        <div class="pt-note">посты, прогревы, сценарии — за минуты вместо часов</div>
+      </div>
+      <div class="product-tag pt-blue">
+        <div class="pt-name">Нейро-воронки</div>
+        <div class="pt-note">тексты продаж, скрипты, автоворонки — цифровой продавец</div>
+      </div>
+      <div class="product-tag pt-gold">
+        <div class="pt-name">Аналитика и стратегия</div>
+        <div class="pt-note">анализ ЦА, JTBD, конкуренты — то, за что раньше платили сотни тысяч</div>
+      </div>
+      <div class="product-tag pt-coral">
+        <div class="pt-name">Образовательные продукты</div>
+        <div class="pt-note">структура курса, методология — из хаоса в продукт за день</div>
+      </div>
+      <div class="product-tag pt-green">
+        <div class="pt-name">Автоматизация</div>
+        <div class="pt-note">планировщики, ассистенты — десятки часов в неделю обратно</div>
+      </div>
+      <div class="product-tag pt-blue">
+        <div class="pt-name">Визуал и медиа</div>
+        <div class="pt-note">нейрофотосессии, баннеры, упаковка — без дизайнера</div>
+      </div>
+      <div class="product-tag pt-gold">
+        <div class="pt-name">Нейро-консалтинг</div>
+        <div class="pt-note">стратегия бизнеса, точки роста, гипотезы масштабирования</div>
+      </div>
+    </div>
+
+    <!-- ══ КАРТОЧКИ: ТРИ ШАГА ══ -->
+    <p class="section-label" style="margin-top:4rem;">Три шага программы</p>
+    <h2 class="section-title">Что ты получишь</h2>
+
+    <div class="cards">
+
+      <div class="card c-coral">
+        <div class="card-icon">
+          <svg viewBox="0 0 24 24">
+            <path d="M12 2a5 5 0 1 1 0 10A5 5 0 0 1 12 2zm-7 18c0-3.87 3.13-7 7-7s7 3.13 7 7H5zm9-9.93A7 7 0 0 1 19 17h2a9 9 0 0 0-5.4-8.22 7 7 0 0 1-4.6 1.22zM1 17a9 9 0 0 1 5.4-8.22A7 7 0 0 0 5 17H1z"/>
+          </svg>
+        </div>
+        <h3 class="card-title">Раскрывает твои цифровые таланты</h3>
+        <p class="card-text">
+          Диагностика выявляет, в каком типе ИИ-продуктов твои природные сильные стороны
+          дают максимальный результат — не потому что модно, а потому что это твоё.
+        </p>
+      </div>
+
+      <div class="card c-green">
+        <div class="card-icon">
+          <svg viewBox="0 0 24 24">
+            <path d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z"/>
+          </svg>
+        </div>
+        <h3 class="card-title">Показывает конкретный тип продукта</h3>
+        <p class="card-text">
+          Твои навыки, характер и цели соединяются в чёткую формулу — ты понимаешь,
+          что строить: ИИ-ассистента, контент-систему, воронку или образовательный продукт.
+        </p>
+      </div>
+
+      <div class="card c-blue">
+        <div class="card-icon">
+          <svg viewBox="0 0 24 24">
+            <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+          </svg>
+        </div>
+        <h3 class="card-title">Даёт направление, а не просто идею</h3>
+        <p class="card-text">
+          Результат — не список советов, а конкретная ниша и тип аудитории: предприниматель,
+          эксперт, фрилансер или компания — кому именно ты создаёшь продукт.
+        </p>
+      </div>
+
+    </div>
+
+    <div class="cta-wrap" style="margin-top:3rem;">
+      <a class="cta-btn" href="#quiz" onclick="document.getElementById('quiz').scrollIntoView({behavior:'smooth'});return false;">
+        <svg viewBox="0 0 24 24" fill="currentColor" style="width:20px;height:20px;">
+          <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+        </svg>
+        Найти свой цифровой продукт
+      </a>
+      <a class="cta-link" href="https://t.me/aleks33375" target="_blank" rel="noopener">
+        Написать напрямую → @aleks33375
+      </a>
+    </div>
+
+  </div>
+</section>
+
+<!-- ══ ДЛЯ КОГО ══ -->
+<section class="section sect-surface">
+  <div class="wrapper">
+    <div class="for-whom">
+      <p class="section-label">Кому подходит</p>
+      <h2 class="section-title">Для тех, кто уже видит<br><span class="grad-text">силу ИИ — но не свой путь</span></h2>
+      <ul class="for-list">
+        <li>
+          <svg class="check-icon" viewBox="0 0 24 24" fill="none">
+            <circle cx="12" cy="12" r="11" fill="url(#chk)"/>
+            <path d="M7 12.5l3.5 3.5 6-7" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <defs><linearGradient id="chk" x1="0" y1="0" x2="24" y2="24" gradientUnits="userSpaceOnUse">
+              <stop stop-color="#D97070"/><stop offset="1" stop-color="#6688CC"/>
+            </linearGradient></defs>
+          </svg>
+          Предприниматели, которые хотят автоматизировать продажи и снизить нагрузку командой
+        </li>
+        <li>
+          <svg class="check-icon" viewBox="0 0 24 24" fill="none">
+            <circle cx="12" cy="12" r="11" fill="url(#chk)"/>
+            <path d="M7 12.5l3.5 3.5 6-7" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          Эксперты и коучи, которые хотят упаковать знания в цифровой продукт и масштабироваться
+        </li>
+        <li>
+          <svg class="check-icon" viewBox="0 0 24 24" fill="none">
+            <circle cx="12" cy="12" r="11" fill="url(#chk)"/>
+            <path d="M7 12.5l3.5 3.5 6-7" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          Фрилансеры, которые хотят ускорить работу, взять больше клиентов и поднять чек
+        </li>
+        <li>
+          <svg class="check-icon" viewBox="0 0 24 24" fill="none">
+            <circle cx="12" cy="12" r="11" fill="url(#chk)"/>
+            <path d="M7 12.5l3.5 3.5 6-7" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          Наёмные сотрудники, которые хотят стать эффективнее, выделиться и вырасти в доходе
+        </li>
+        <li>
+          <svg class="check-icon" viewBox="0 0 24 24" fill="none">
+            <circle cx="12" cy="12" r="11" fill="url(#chk)"/>
+            <path d="M7 12.5l3.5 3.5 6-7" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          Компании и команды, которые внедряют ИИ в маркетинг, продажи, HR и поддержку
+        </li>
+        <li>
+          <svg class="check-icon" viewBox="0 0 24 24" fill="none">
+            <circle cx="12" cy="12" r="11" fill="url(#chk)"/>
+            <path d="M7 12.5l3.5 3.5 6-7" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          Все, кто уже пробовал нейросети, но не понял — что именно строить под свою природу
+        </li>
+      </ul>
+    </div>
+
+    <!-- ЦИФРЫ -->
+    <div class="benefits">
+      <div>
+        <div class="benefit-num">3</div>
+        <div class="benefit-label">ключевых элемента<br>раскрываются в программе</div>
+      </div>
+      <div>
+        <div class="benefit-num">1</div>
+        <div class="benefit-label">конкретный тип продукта —<br>твоя точка входа в ИИ</div>
+      </div>
+      <div>
+        <div class="benefit-num">∞</div>
+        <div class="benefit-label">применений: ассистент,<br>курс, воронка, контент</div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ══ КВИЗ-КАЛЬКУЛЯТОР ══ -->
+<section class="quiz-section" id="quiz">
+  <div class="wrapper">
+    <div style="text-align:center; margin-bottom:2.5rem;">
+      <p class="section-label">Калькулятор продукта</p>
+      <h2 class="section-title">Найди свой <span class="grad-text">цифровой продукт</span></h2>
+      <p class="hero-sub" style="margin:0 auto;">
+        Ответь на три вопроса своими словами — и увидишь, какой ИИ-продукт<br>
+        создавать именно тебе, исходя из твоей природы.
+      </p>
+    </div>
+
+    <div class="quiz-box">
+
+      <div class="quiz-progress">
+        <div class="progress-track">
+          <div class="progress-fill" id="progressFill" style="width:33%"></div>
+        </div>
+        <span class="progress-label" id="progressLabel">Шаг 1 из 3</span>
+      </div>
+
+      <div class="step-dots">
+        <div class="step-dot active dot-coral" id="dot0"></div>
+        <div class="step-dot" id="dot1"></div>
+        <div class="step-dot" id="dot2"></div>
+      </div>
+
+      <!-- ШАГ 1: Таланты и цифровые навыки -->
+      <div class="quiz-step active" id="step0">
+        <span class="step-tag coral">
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          Шаг 1 — Таланты и навыки
+        </span>
+        <h3 class="step-question">Что ты делаешь легко —<br>и что из этого можно превратить в цифровой продукт?</h3>
+        <p class="step-hint">Подумай: в чём ты разбираешься лучше других? Что делаешь быстро и хорошо — в работе, общении, анализе, создании контента? Какие задачи решаешь на автопилоте, пока другие тратят часы?</p>
+        <textarea class="quiz-input" id="input0" placeholder="Например: объясняю сложное простыми словами, быстро нахожу структуру в хаосе, понимаю что нужно аудитории, пишу тексты которые продают…" rows="4"></textarea>
+        <div class="chips" id="chips0">
+          <span class="chip" data-target="input0">объяснять сложное просто</span>
+          <span class="chip" data-target="input0">структурировать информацию</span>
+          <span class="chip" data-target="input0">чувствовать аудиторию</span>
+          <span class="chip" data-target="input0">писать тексты и сценарии</span>
+          <span class="chip" data-target="input0">находить нестандартные решения</span>
+          <span class="chip" data-target="input0">анализировать данные и тренды</span>
+          <span class="chip" data-target="input0">строить системы и процессы</span>
+          <span class="chip" data-target="input0">продавать и убеждать</span>
+          <span class="chip" data-target="input0">создавать визуал и упаковку</span>
+          <span class="chip" data-target="input0">собирать команды и проекты</span>
+        </div>
+        <div class="quiz-nav">
+          <span></span>
+          <button class="btn-next" onclick="nextStep(0)">
+            Далее
+            <svg viewBox="0 0 24 24"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6z"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- ШАГ 2: Свойства личности -->
+      <div class="quiz-step" id="step1">
+        <span class="step-tag green">
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 15v-4H7l5-8v4h4l-5 8z"/></svg>
+          Шаг 2 — Свойства личности
+        </span>
+        <h3 class="step-question">Как ты работаешь лучше всего —<br>и что тебя по-настоящему захватывает?</h3>
+        <p class="step-hint">Что ты делаешь с удовольствием и энергией — независимо от контекста? Ты лучше работаешь один или с людьми? Тебя заряжает создание нового или улучшение существующего? Что захватывает тебя так, что время летит?</p>
+        <textarea class="quiz-input" id="input1" placeholder="Например: работать в потоке над одной задачей, общаться один на один, придумывать с нуля, помогать другим разобраться в сложном, исследовать и находить закономерности…" rows="4"></textarea>
+        <div class="chips" id="chips1">
+          <span class="chip" data-target="input1">глубоко разбираться в теме</span>
+          <span class="chip" data-target="input1">создавать продукты с нуля</span>
+          <span class="chip" data-target="input1">общаться и помогать людям</span>
+          <span class="chip" data-target="input1">автоматизировать и оптимизировать</span>
+          <span class="chip" data-target="input1">исследовать и анализировать</span>
+          <span class="chip" data-target="input1">обучать и передавать знания</span>
+          <span class="chip" data-target="input1">придумывать концепции и стратегии</span>
+          <span class="chip" data-target="input1">запускать и тестировать быстро</span>
+          <span class="chip" data-target="input1">строить системы и процессы</span>
+          <span class="chip" data-target="input1">вдохновлять и вести за собой</span>
+        </div>
+        <div class="quiz-nav">
+          <button class="btn-back" onclick="prevStep(1)">← Назад</button>
+          <button class="btn-next" onclick="nextStep(1)">
+            Далее
+            <svg viewBox="0 0 24 24"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6z"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- ШАГ 3: Цели -->
+      <div class="quiz-step" id="step2">
+        <span class="step-tag blue">
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 1 0 0 20A10 10 0 0 0 12 2zm1 14.93V15h-2v1.93A8.01 8.01 0 0 1 4.07 10H6V8H4.07A8.01 8.01 0 0 1 11 4.07V6h2V4.07A8.01 8.01 0 0 1 19.93 8H18v2h1.93A8.01 8.01 0 0 1 13 16.93z"/></svg>
+          Шаг 3 — Цели
+        </span>
+        <h3 class="step-question">Ради чего ты хочешь создавать<br>цифровые продукты?</h3>
+        <p class="step-hint">Что тебя двигает вперёд? Свобода и доход? Помочь конкретной аудитории? Автоматизировать рутину? Масштабировать своё дело? Напиши, ради чего именно ты готов строить продукты на базе ИИ.</p>
+        <textarea class="quiz-input" id="input2" placeholder="Например: создать пассивный доход, помогать предпринимателям расти, автоматизировать своё дело и работать меньше, запустить обучение для своей ниши…" rows="4"></textarea>
+        <div class="chips" id="chips2">
+          <span class="chip" data-target="input2">зарабатывать на своих знаниях</span>
+          <span class="chip" data-target="input2">создать пассивный доход</span>
+          <span class="chip" data-target="input2">помогать предпринимателям расти</span>
+          <span class="chip" data-target="input2">автоматизировать своё дело</span>
+          <span class="chip" data-target="input2">обучать свою нишу</span>
+          <span class="chip" data-target="input2">масштабировать экспертность</span>
+          <span class="chip" data-target="input2">работать свободно без офиса</span>
+          <span class="chip" data-target="input2">строить своё агентство или команду</span>
+          <span class="chip" data-target="input2">решить важную задачу для рынка</span>
+          <span class="chip" data-target="input2">стать востребованным ИИ-специалистом</span>
+        </div>
+        <div class="quiz-nav">
+          <button class="btn-back" onclick="prevStep(2)">← Назад</button>
+          <button class="btn-next" onclick="showResult()">
+            Найти мой продукт
+            <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- РЕЗУЛЬТАТ -->
+      <div class="quiz-result" id="quizResult">
+        <div class="result-header">
+          <div class="result-badge">Твой цифровой продукт</div>
+          <h3 class="result-title">Вот что нужно создавать —<br><span class="grad-text">именно тебе</span></h3>
+        </div>
+
+        <div class="result-venn">
+          <svg viewBox="0 0 360 300" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <radialGradient id="rg" cx="50%" cy="50%" r="50%">
+                <stop offset="0%" stop-color="#FFD700" stop-opacity="1"/>
+                <stop offset="55%" stop-color="#FFE878" stop-opacity="0.7"/>
+                <stop offset="100%" stop-color="#FFD700" stop-opacity="0"/>
+              </radialGradient>
+            </defs>
+            <circle cx="180" cy="100" r="108" fill="#D97070" fill-opacity="0.5"/>
+            <circle cx="105" cy="215" r="108" fill="#57B374" fill-opacity="0.5"/>
+            <circle cx="255" cy="215" r="108" fill="#6688CC" fill-opacity="0.5"/>
+            <circle cx="180" cy="185" r="52" fill="url(#rg)">
+              <animate attributeName="r" values="48;56;48" dur="3s" repeatCount="indefinite"/>
+              <animate attributeName="opacity" values="0.85;1;0.85" dur="3s" repeatCount="indefinite"/>
+            </circle>
+            <text x="180" y="96" text-anchor="middle" font-size="12" font-weight="700" fill="#fff" opacity="0.95">Навыки</text>
+            <text x="105" y="228" text-anchor="middle" font-size="11" font-weight="700" fill="#fff" opacity="0.95">Характер</text>
+            <text x="255" y="228" text-anchor="middle" font-size="12" font-weight="700" fill="#fff" opacity="0.95">Цели</text>
+            <text x="180" y="181" text-anchor="middle" font-size="10" font-weight="800" fill="#7A4500">Твой</text>
+            <text x="180" y="194" text-anchor="middle" font-size="10" font-weight="800" fill="#7A4500">продукт</text>
+          </svg>
+        </div>
+
+        <div class="result-blocks">
+          <div class="result-block rb-coral">
+            <div class="rb-label">Навыки</div>
+            <div class="rb-value" id="r0">—</div>
+          </div>
+          <div class="result-block rb-green">
+            <div class="rb-label">Характер</div>
+            <div class="rb-value" id="r1">—</div>
+          </div>
+          <div class="result-block rb-blue">
+            <div class="rb-label">Цели</div>
+            <div class="rb-value" id="r2">—</div>
+          </div>
+        </div>
+
+        <div class="result-formula">
+          <div class="formula-label">Твоя формула продукта</div>
+          <div class="formula-text" id="formulaText">…</div>
+        </div>
+
+        <div class="genius-zone" id="geniusZone">
+          <div class="gz-header">
+            <div class="gz-icon" id="gzIcon">✦</div>
+            <div class="gz-title-wrap">
+              <div class="gz-label">Твой тип цифрового продукта</div>
+              <div class="gz-name" id="gzName">…</div>
+            </div>
+          </div>
+          <div class="gz-body">
+            <div class="gz-sentence" id="gzSentence">…</div>
+            <div class="gz-desc" id="gzDesc">…</div>
+          </div>
+        </div>
+
+        <div class="result-cta">
+          <a class="cta-btn" href="https://t.me/aleks33375" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M11.994 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm4.93 6.77-1.68 7.93c-.12.56-.45.7-.91.43l-2.52-1.86-1.21 1.17c-.13.13-.25.25-.51.25l.18-2.58 4.67-4.22c.2-.18-.04-.28-.32-.1L7.43 14.5l-2.47-.77c-.54-.17-.55-.54.11-.8l9.66-3.72c.45-.16.84.11.69.56z"/></svg>
+            Обсудить результат с Алексеем
+          </a>
+          <button class="btn-restart" onclick="restartQuiz()">Пройти ещё раз</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ══ ФИНАЛЬНЫЙ CTA ══ -->
+<section class="final-cta sect-surface">
+  <div class="wrapper">
+    <p class="section-label">Начать</p>
+    <h2 class="section-title">
+      Готов найти свой<br><span class="grad-text">цифровой продукт?</span>
+    </h2>
+    <p class="hero-desc">
+      Напиши — расскажи кто ты: эксперт, фрилансер, предприниматель или наёмный сотрудник.
+      Я соберу под тебя конкретную модель и набор инструментов.
+    </p>
+    <div class="cta-wrap">
+      <a class="cta-btn" href="https://t.me/aleks33375" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24">
+          <path d="M11.994 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm4.93 6.77-1.68 7.93c-.12.56-.45.7-.91.43l-2.52-1.86-1.21 1.17c-.13.13-.25.25-.51.25l.18-2.58 4.67-4.22c.2-.18-.04-.28-.32-.1L7.43 14.5l-2.47-.77c-.54-.17-.55-.54.11-.8l9.66-3.72c.45-.16.84.11.69.56z"/>
+        </svg>
+        Написать Алексею
+      </a>
+      <a class="cta-link" href="https://t.me/aleks33375" target="_blank" rel="noopener">
+        Telegram → @aleks33375
+      </a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  © 2026 · Программа раскрытия личности · Вайбкодинг · Алексей Тарасенко
+</footer>
+
+<script>
+  document.querySelectorAll('.chip').forEach(chip => {
+    chip.addEventListener('click', () => {
+      const targetId = chip.dataset.target;
+      const input = document.getElementById(targetId);
+      const val = chip.textContent.trim();
+      if (input.value && !input.value.endsWith(', ') && !input.value.endsWith('\n')) {
+        input.value += ', ';
+      }
+      input.value += val;
+      chip.classList.toggle('selected');
+      input.focus();
+    });
+  });
+
+  const TOTAL = 3;
+  const progressWidths = ['33%', '66%', '100%'];
+  const dotClasses = ['dot-coral', 'dot-green', 'dot-blue'];
+
+  function updateProgress(step) {
+    document.getElementById('progressFill').style.width = progressWidths[step];
+    document.getElementById('progressLabel').textContent = `Шаг ${step + 1} из ${TOTAL}`;
+    for (let i = 0; i < TOTAL; i++) {
+      const dot = document.getElementById('dot' + i);
+      dot.className = 'step-dot';
+      if (i < step)  dot.classList.add('done');
+      if (i === step) dot.classList.add('active', dotClasses[i]);
+    }
+  }
+
+  function nextStep(current) {
+    const input = document.getElementById('input' + current);
+    if (!input.value.trim()) {
+      input.style.borderColor = 'rgba(217,112,112,0.6)';
+      input.focus();
+      setTimeout(() => { input.style.borderColor = ''; }, 1500);
+      return;
+    }
+    document.getElementById('step' + current).classList.remove('active');
+    document.getElementById('step' + (current + 1)).classList.add('active');
+    updateProgress(current + 1);
+  }
+
+  function prevStep(current) {
+    document.getElementById('step' + current).classList.remove('active');
+    document.getElementById('step' + (current - 1)).classList.add('active');
+    updateProgress(current - 1);
+  }
+
+  function showResult() {
+    const v0 = document.getElementById('input0').value.trim();
+    const v1 = document.getElementById('input1').value.trim();
+    const v2 = document.getElementById('input2').value.trim();
+
+    if (!v2) {
+      const input = document.getElementById('input2');
+      input.style.borderColor = 'rgba(217,112,112,0.6)';
+      input.focus();
+      setTimeout(() => { input.style.borderColor = ''; }, 1500);
+      return;
+    }
+
+    document.getElementById('r0').textContent = v0;
+    document.getElementById('r1').textContent = v1;
+    document.getElementById('r2').textContent = v2;
+    document.getElementById('formulaText').textContent = buildFormula(v0, v1, v2);
+
+    const zone = detectZone(v0, v1, v2);
+    document.getElementById('gzIcon').textContent     = zone.icon;
+    document.getElementById('gzName').textContent     = zone.name;
+    document.getElementById('gzSentence').textContent = zone.sentence;
+    document.getElementById('gzDesc').textContent     = zone.desc;
+
+    document.getElementById('step2').classList.remove('active');
+    document.querySelector('.quiz-progress').style.display = 'none';
+    document.querySelector('.step-dots').style.display = 'none';
+    document.getElementById('quizResult').classList.add('active');
+    document.getElementById('quizResult').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  function buildFormula(skills, character, goals) {
+    const s = firstPhrase(skills);
+    const c = firstPhrase(character);
+    const g = firstPhrase(goals);
+    return `Твоя сила — ${s}. В сочетании с тем, что ты ${c}, это даёт тебе точный вектор: ${g}.`;
+  }
+
+  // Зоны — адаптированы под типы ИИ-продуктов
+  const ZONES = [
+    {
+      id: 'assistant',
+      icon: '🤖',
+      name: 'ИИ-ассистент под нишу',
+      sentence: 'Ты строишь персонального GPT, который знает нишу лучше любого сотрудника.',
+      desc: 'Твоя сила — глубокое понимание конкретной области. Ты создаёшь ИИ-ассистента для юристов, маркетологов, коучей или специалистов своей ниши. Узкая специализация = сильный результат.',
+      keywords: ['анализ', 'разбираться', 'система', 'процесс', 'нишу', 'специал', 'юрист', 'консулт', 'структур', 'закономерн']
+    },
+    {
+      id: 'content',
+      icon: '✍️',
+      name: 'Система генерации контента',
+      sentence: 'Ты создаёшь контент-машину: посты, прогревы, сценарии — за минуты вместо часов.',
+      desc: 'Твоя природная сила — в текстах, идеях и коммуникации. Ты строишь системы, которые генерируют контент автоматически: для себя или для клиентов. Это продукт, который экономит десятки часов.',
+      keywords: ['текст', 'пис', 'контент', 'пост', 'сценар', 'объяснять', 'коммуниц', 'слов', 'историй', 'прогрев', 'медиа', 'упаков']
+    },
+    {
+      id: 'funnel',
+      icon: '🚀',
+      name: 'Нейро-воронка и продажи',
+      sentence: 'Ты строишь цифрового продавца: воронки, скрипты, автоматизация продаж.',
+      desc: 'Ты понимаешь, как работают продажи и что движет людьми к решению. Твой продукт — автоворонки и системы продаж на базе ИИ. Это то, что генерирует деньги 24/7 без твоего участия.',
+      keywords: ['продавать', 'продаж', 'убеждать', 'воронк', 'клиент', 'доход', 'зарабатыв', 'деньги', 'монетиз', 'запустить']
+    },
+    {
+      id: 'education',
+      icon: '📚',
+      name: 'Образовательный продукт',
+      sentence: 'Ты упаковываешь экспертизу в курс, программу или методологию — за день.',
+      desc: 'Твоя сила — в передаче знаний и структурировании информации. Ты создаёшь обучающие продукты, которые масштабируют твою экспертность без личного времени. Из хаоса в голове — в продукт.',
+      keywords: ['обуч', 'учить', 'курс', 'знани', 'эксперт', 'передавать', 'наставн', 'методолог', 'программ', 'обучени', 'масштабир']
+    },
+    {
+      id: 'analytics',
+      icon: '🔍',
+      name: 'Аналитическая система',
+      sentence: 'Ты строишь инструменты анализа ЦА, конкурентов и стратегии продукта.',
+      desc: 'Твоя природа — исследовать, находить паттерны и выдавать стратегические решения. Ты создаёшь аналитические системы для бизнеса: то, за что раньше платили сотни тысяч консалтерам.',
+      keywords: ['анализ', 'исследов', 'данные', 'стратег', 'конкурент', 'аудитор', 'рынок', 'тренды', 'закономерн', 'решени']
+    },
+    {
+      id: 'automation',
+      icon: '⚡',
+      name: 'Автоматизация и процессы',
+      sentence: 'Ты строишь системы, которые экономят десятки часов в неделю.',
+      desc: 'Тебя вдохновляет эффективность и убирание рутины. Твой продукт — ИИ-автоматизация для бизнеса: планировщики, обработка задач, ассистенты для команд. Ты возвращаешь людям самый ценный ресурс — время.',
+      keywords: ['автоматиз', 'оптимиз', 'систем', 'процесс', 'рутин', 'эффективн', 'время', 'задач', 'планир', 'быстро']
+    },
+    {
+      id: 'visual',
+      icon: '🎨',
+      name: 'Визуал и упаковка эксперта',
+      sentence: 'Ты создаёшь нейрофотосессии, баннеры, обложки — на уровне рынка, без дизайнера.',
+      desc: 'Твоя сила — в визуальном мышлении и эстетике. Ты строишь продукты в области генерации визуала: нейрофотосессии, карточки товаров, упаковка экспертов. Это востребованная услуга с высоким чеком.',
+      keywords: ['визуал', 'дизайн', 'рисовать', 'красот', 'эстетик', 'образ', 'фото', 'обложк', 'упаков', 'создавать']
+    },
+    {
+      id: 'consulting',
+      icon: '💡',
+      name: 'Нейро-консалтинг',
+      sentence: 'Ты помогаешь бизнесу быстро принимать решения с помощью ИИ.',
+      desc: 'Ты мыслишь стратегически и видишь точки роста там, где другие видят хаос. Твой продукт — нейро-консалтинг: стратегии, гипотезы масштабирования, быстрое принятие решений. Высокий чек, высокий спрос.',
+      keywords: ['стратег', 'консалт', 'помогать бизнесу', 'рост', 'масштаб', 'точки роста', 'предприним', 'бизнес', 'лидер', 'влия']
+    }
+  ];
+
+  function detectZone(s, c, g) {
+    const all = (s + ' ' + c + ' ' + g).toLowerCase();
+    const scores = ZONES.map(zone => {
+      let score = 0;
+      zone.keywords.forEach(kw => { if (all.includes(kw)) score++; });
+      return { zone, score };
+    });
+    scores.sort((a, b) => b.score - a.score);
+    return scores[0].score > 0 ? scores[0].zone : ZONES[0];
+  }
+
+  function firstPhrase(text) {
+    const clean = text.trim().replace(/^[,.\s]+/, '');
+    const match = clean.match(/^([^,;\n]{3,60})/);
+    if (match) {
+      let s = match[1].trim();
+      return s.charAt(0).toLowerCase() + s.slice(1);
+    }
+    return clean.substring(0, 60).trim();
+  }
+
+  function restartQuiz() {
+    ['input0','input1','input2'].forEach(id => { document.getElementById(id).value = ''; });
+    document.querySelectorAll('.chip').forEach(c => c.classList.remove('selected'));
+    document.getElementById('quizResult').classList.remove('active');
+    document.querySelector('.quiz-progress').style.display = '';
+    document.querySelector('.step-dots').style.display = '';
+    document.getElementById('step0').classList.add('active');
+    updateProgress(0);
+    document.getElementById('quiz').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+</script>
+</body>
+</html>
