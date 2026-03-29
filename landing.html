@@ -762,6 +762,28 @@
 
     .btn-restart:hover { color: var(--text); }
 
+    .btn-save-img {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.65rem 1.5rem;
+      border-radius: 2rem;
+      border: 1px solid rgba(255,255,255,0.15);
+      background: rgba(255,255,255,0.05);
+      color: var(--muted);
+      font-size: 0.85rem;
+      font-weight: 600;
+      font-family: inherit;
+      cursor: pointer;
+      transition: border-color 0.2s, color 0.2s, background 0.2s;
+    }
+    .btn-save-img:hover {
+      border-color: rgba(255,215,0,0.4);
+      color: var(--text);
+      background: rgba(255,215,0,0.07);
+    }
+    .btn-save-img svg { width: 15px; height: 15px; fill: currentColor; }
+
     /* ── ЗОНА ГЕНИЯ ── */
     .genius-zone {
       margin-bottom: 2rem;
@@ -832,6 +854,7 @@
       .result-blocks { grid-template-columns: 1fr; }
     }
   </style>
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 </head>
 <body>
 
@@ -1397,6 +1420,10 @@
             <svg viewBox="0 0 24 24" fill="currentColor"><path d="M11.994 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm4.93 6.77-1.68 7.93c-.12.56-.45.7-.91.43l-2.52-1.86-1.21 1.17c-.13.13-.25.25-.51.25l.18-2.58 4.67-4.22c.2-.18-.04-.28-.32-.1L7.43 14.5l-2.47-.77c-.54-.17-.55-.54.11-.8l9.66-3.72c.45-.16.84.11.69.56z"/></svg>
             Обсудить результат с Алексеем
           </a>
+          <button class="btn-save-img" onclick="saveResultAsImage()">
+            <svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
+            Сохранить как фото
+          </button>
           <button class="btn-restart" onclick="restartQuiz()">Пройти ещё раз</button>
         </div>
       </div>
@@ -1531,7 +1558,7 @@
     const t = firstPhrase(talents);
     const c = firstPhrase(character);
     const g = firstPhrase(goals);
-    return `Твоя сила — ${t}. Это усилено тем, что ты ${c}. Именно поэтому твой путь ведёт к тому, чтобы ${g}.`;
+    return `Твоя сила — ${t}. Это усилено тем, что ты умеешь ${c}. Именно поэтому твой путь ведёт к тому, чтобы ${g}.`;
   }
 
   // ── Зоны гения ──
@@ -1540,7 +1567,7 @@
       id: 'mission',
       icon: '🌟',
       name: 'Призвание / Миссия',
-      sentence: 'Когда делаешь то, что естественно получается — и при этом наполняет смыслом.',
+      sentence: 'Когда делаешь то, что естественно получается — и при этом наполняет тебя смыслом.',
       desc: 'Это не работа — это служение. Твой путь строится вокруг глубокого смысла, а не внешних достижений. Ты не ищешь работу — ты ищешь дело жизни.',
       keywords: ['смысл', 'миссия', 'призвание', 'служение', 'важно', 'предназначение', 'суть', 'нужен', 'нужна', 'след']
     },
@@ -1621,6 +1648,35 @@
   }
 
   // ── Рестарт ──
+  function saveResultAsImage() {
+    const card = document.getElementById('exportCard');
+    card.querySelector('#ecLabel').textContent = 'Твоя зона гения';
+    card.querySelector('#ecIcon').textContent  = document.getElementById('gzIcon').textContent;
+    card.querySelector('#ecName').textContent  = document.getElementById('gzName').textContent;
+    card.querySelector('#ecSentence').textContent = document.getElementById('gzSentence').textContent;
+    card.querySelector('#ecDesc').textContent  = document.getElementById('gzDesc').textContent;
+    card.style.display = 'block';
+
+    const btn = document.querySelector('.btn-save-img');
+    btn.disabled = true;
+    btn.textContent = 'Сохраняю…';
+
+    html2canvas(card, {
+      backgroundColor: '#0e0e1a',
+      scale: 2,
+      useCORS: true,
+      logging: false
+    }).then(canvas => {
+      card.style.display = 'none';
+      const link = document.createElement('a');
+      link.download = 'моя-зона-гения.png';
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+      btn.disabled = false;
+      btn.innerHTML = '<svg viewBox="0 0 24 24" style="width:15px;height:15px;fill:currentColor"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg> Сохранить как фото';
+    });
+  }
+
   function restartQuiz() {
     ['input0','input1','input2'].forEach(id => {
       document.getElementById(id).value = '';
@@ -1634,5 +1690,21 @@
     document.getElementById('quiz').scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 </script>
+
+<!-- Карточка для экспорта фото (скрыта, захватывается html2canvas) -->
+<div id="exportCard" style="display:none;position:fixed;top:-9999px;left:0;width:560px;background:#0e0e1a;border-radius:1.25rem;overflow:hidden;border:1px solid rgba(255,255,255,0.1);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;">
+  <div style="padding:1.75rem 1.75rem 1.25rem;">
+    <div id="ecLabel" style="font-size:0.65rem;letter-spacing:0.12em;text-transform:uppercase;color:#D97070;font-weight:700;margin-bottom:0.9rem;"></div>
+    <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:0;">
+      <span id="ecIcon" style="font-size:2rem;line-height:1;"></span>
+      <span id="ecName" style="font-size:1.35rem;font-weight:800;color:#e8e8f0;line-height:1.25;"></span>
+    </div>
+  </div>
+  <div style="padding:1.25rem 1.75rem 1.75rem;background:rgba(255,255,255,0.025);">
+    <div id="ecSentence" style="font-size:1rem;font-style:italic;font-weight:700;color:#FFD700;margin-bottom:0.875rem;line-height:1.55;"></div>
+    <div id="ecDesc" style="font-size:0.875rem;color:#8888aa;line-height:1.65;"></div>
+    <div style="margin-top:1.25rem;padding-top:0.875rem;border-top:1px solid rgba(255,255,255,0.07);font-size:0.68rem;color:#44445a;letter-spacing:0.03em;">aleksis.ru · Программа раскрытия личности</div>
+  </div>
+</div>
 </body>
 </html>
