@@ -393,6 +393,33 @@
       animation: none;
     }
 
+    /* ══════════════════════════════
+       ВИЗУАЛИЗАЦИЯ КРУГОВ
+    ══════════════════════════════ */
+    .visual-section {
+      padding: 4rem 0 2rem;
+    }
+
+    .visual-wrap {
+      max-width: 520px;
+      margin: 0 auto;
+      position: relative;
+    }
+
+    .visual-wrap svg {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    .visual-caption {
+      text-align: center;
+      margin-top: 1.5rem;
+      font-size: 0.88rem;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
     /* ── РАЗДЕЛИТЕЛЬ ── */
     .divider {
       width: 60px;
@@ -836,46 +863,192 @@
       и показывает точку их пересечения — место, откуда начинается осознанный путь.
     </p>
 
-    <!-- Venn SVG -->
-    <div class="venn">
-      <svg viewBox="0 0 280 240" xmlns="http://www.w3.org/2000/svg">
+  </div>
+</section>
+
+<!-- ══ ВИЗУАЛИЗАЦИЯ ══ -->
+<section class="visual-section">
+  <div class="wrapper">
+    <div class="visual-wrap">
+      <svg viewBox="0 0 560 520" xmlns="http://www.w3.org/2000/svg" overflow="visible">
         <defs>
-          <radialGradient id="gold-h" cx="50%" cy="50%" r="50%">
+          <style>
+            .vc-label { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
+            .vc-labels { opacity: 1; }
+            .vc-gold-pulse {
+              animation: vcGoldPulse 15s 0s infinite;
+              opacity: 0;
+            }
+            @keyframes vcGoldPulse {
+              0%, 30%     { opacity: 0; }
+              38%         { opacity: 1; }
+              80%         { opacity: 0.9; }
+              90%         { opacity: 0; }
+              100%        { opacity: 0; }
+            }
+          </style>
+          <radialGradient id="vcGold" cx="50%" cy="50%" r="50%">
             <stop offset="0%"   stop-color="#FFD700" stop-opacity="1"/>
-            <stop offset="50%"  stop-color="#FFE878" stop-opacity="0.8"/>
+            <stop offset="35%"  stop-color="#FFE040" stop-opacity="0.95"/>
+            <stop offset="65%"  stop-color="#FFF0A0" stop-opacity="0.7"/>
+            <stop offset="88%"  stop-color="#FFFBE0" stop-opacity="0.3"/>
+            <stop offset="100%" stop-color="#FFFFFF" stop-opacity="0"/>
+          </radialGradient>
+          <radialGradient id="vcFlash" cx="50%" cy="50%" r="50%">
+            <stop offset="0%"   stop-color="#FFFFFF" stop-opacity="1"/>
+            <stop offset="30%"  stop-color="#FFD700" stop-opacity="1"/>
             <stop offset="100%" stop-color="#FFD700" stop-opacity="0"/>
           </radialGradient>
+          <filter id="vcShadow" x="-15%" y="-15%" width="130%" height="130%">
+            <feDropShadow dx="2" dy="4" stdDeviation="8" flood-color="#00000035"/>
+          </filter>
+          <filter id="vcGlow" x="-40%" y="-40%" width="180%" height="180%">
+            <feDropShadow dx="0" dy="0" stdDeviation="4" flood-color="#FFD700" flood-opacity="0.6"/>
+          </filter>
         </defs>
-        <circle cx="140" cy="82"  r="90" fill="#D97070" fill-opacity="0.55"/>
-        <circle cx="82"  cy="172" r="90" fill="#57B374" fill-opacity="0.55"/>
-        <circle cx="198" cy="172" r="90" fill="#6688CC" fill-opacity="0.55"/>
-        <circle cx="140" cy="150" r="44" fill="url(#gold-h)">
-          <animate attributeName="r" values="40;48;40" dur="3s" repeatCount="indefinite"/>
-          <animate attributeName="opacity" values="0.85;1;0.85" dur="3s" repeatCount="indefinite"/>
+
+        <!-- ══ КОРАЛЛОВЫЙ ══ -->
+        <circle cx="280" cy="175" r="165" fill="#D97070" fill-opacity="0.78" filter="url(#vcShadow)">
+          <!-- Сброс в начальную позицию -->
+          <animate attributeName="cy" to="50" dur="0.01s" fill="freeze"
+                   begin="0s; 15s; 30s; 45s; 60s"/>
+          <!-- Движение к финальной позиции -->
+          <animate attributeName="cy" values="50; 130; 155; 175"
+                   keyTimes="0; 0.45; 0.65; 1"
+                   keySplines="0.6 0 0.9 0.4; 0.1 0.2 0.9 0.8; 0 0 1 1"
+                   calcMode="spline" dur="5s" fill="freeze"
+                   begin="0.5s; 15.5s; 30.5s; 45.5s; 60.5s"/>
         </circle>
-        <text x="140" y="82" text-anchor="middle" dominant-baseline="middle"
-              font-size="11" font-weight="700" fill="#fff" opacity="0.9">Таланты</text>
-        <text x="82" y="185" text-anchor="middle" dominant-baseline="middle"
-              font-size="10" font-weight="700" fill="#fff" opacity="0.9">Характер</text>
-        <text x="198" y="185" text-anchor="middle" dominant-baseline="middle"
-              font-size="11" font-weight="700" fill="#fff" opacity="0.9">Цели</text>
-        <text x="140" y="148" text-anchor="middle" dominant-baseline="middle"
-              font-size="9.5" font-weight="800" fill="#7A4500">Твоя суть</text>
+
+        <!-- ══ ЗЕЛЁНЫЙ ══ -->
+        <circle cx="163" cy="365" r="165" fill="#57B374" fill-opacity="0.78" filter="url(#vcShadow)">
+          <animate attributeName="cx" to="50"  dur="0.01s" fill="freeze"
+                   begin="0s; 15s; 30s; 45s; 60s"/>
+          <animate attributeName="cy" to="460" dur="0.01s" fill="freeze"
+                   begin="0s; 15s; 30s; 45s; 60s"/>
+          <animate attributeName="cx" values="50; 110; 135; 163"
+                   keyTimes="0; 0.45; 0.65; 1"
+                   keySplines="0.6 0 0.9 0.4; 0.1 0.2 0.9 0.8; 0 0 1 1"
+                   calcMode="spline" dur="5s" fill="freeze"
+                   begin="0.5s; 15.5s; 30.5s; 45.5s; 60.5s"/>
+          <animate attributeName="cy" values="460; 415; 395; 365"
+                   keyTimes="0; 0.45; 0.65; 1"
+                   keySplines="0.6 0 0.9 0.4; 0.1 0.2 0.9 0.8; 0 0 1 1"
+                   calcMode="spline" dur="5s" fill="freeze"
+                   begin="0.5s; 15.5s; 30.5s; 45.5s; 60.5s"/>
+        </circle>
+
+        <!-- ══ СИНИЙ ══ -->
+        <circle cx="397" cy="365" r="165" fill="#6688CC" fill-opacity="0.78" filter="url(#vcShadow)">
+          <animate attributeName="cx" to="510" dur="0.01s" fill="freeze"
+                   begin="0s; 15s; 30s; 45s; 60s"/>
+          <animate attributeName="cy" to="460" dur="0.01s" fill="freeze"
+                   begin="0s; 15s; 30s; 45s; 60s"/>
+          <animate attributeName="cx" values="510; 450; 425; 397"
+                   keyTimes="0; 0.45; 0.65; 1"
+                   keySplines="0.6 0 0.9 0.4; 0.1 0.2 0.9 0.8; 0 0 1 1"
+                   calcMode="spline" dur="5s" fill="freeze"
+                   begin="0.5s; 15.5s; 30.5s; 45.5s; 60.5s"/>
+          <animate attributeName="cy" values="460; 415; 395; 365"
+                   keyTimes="0; 0.45; 0.65; 1"
+                   keySplines="0.6 0 0.9 0.4; 0.1 0.2 0.9 0.8; 0 0 1 1"
+                   calcMode="spline" dur="5s" fill="freeze"
+                   begin="0.5s; 15.5s; 30.5s; 45.5s; 60.5s"/>
+        </circle>
+
+        <!-- ══ ЗОЛОТАЯ ВСПЫШКА ══ -->
+        <circle cx="280" cy="300" r="0" fill="url(#vcFlash)" opacity="0">
+          <animate attributeName="opacity" to="0" dur="0.01s" fill="freeze"
+                   begin="0s; 15s; 30s; 45s; 60s"/>
+          <animate attributeName="r" to="0" dur="0.01s" fill="freeze"
+                   begin="0s; 15s; 30s; 45s; 60s"/>
+          <animate attributeName="opacity" values="0;1;0" keyTimes="0;0.15;1"
+                   dur="1.5s" fill="freeze"
+                   begin="5.5s; 20.5s; 35.5s; 50.5s; 65.5s"/>
+          <animate attributeName="r" values="0;28;0" keyTimes="0;0.15;1"
+                   dur="1.5s" fill="freeze"
+                   begin="5.5s; 20.5s; 35.5s; 50.5s; 65.5s"/>
+        </circle>
+
+        <!-- ══ ЗОЛОТОЙ ЦЕНТР ══ -->
+        <circle cx="280" cy="300" r="0" fill="url(#vcGold)" class="vc-gold-pulse">
+          <animate attributeName="r" to="0" dur="0.01s" fill="freeze"
+                   begin="0s; 15s; 30s; 45s; 60s"/>
+          <animate attributeName="r" values="0; 50; 75; 90"
+                   keyTimes="0; 0.33; 0.67; 1"
+                   keySplines="0.4 0 0.6 1; 0.4 0 0.6 1; 0.4 0 0.6 1"
+                   calcMode="spline" dur="3s" fill="freeze"
+                   begin="5.5s; 20.5s; 35.5s; 50.5s; 65.5s"/>
+          <animate attributeName="r" values="90;96;90" dur="2.5s" repeatCount="indefinite"
+                   begin="8.5s; 23.5s; 38.5s; 53.5s; 68.5s"/>
+        </circle>
+
+        <!-- ══ ПОДПИСИ КРУГОВ ══ -->
+        <g class="vc-labels">
+          <text class="vc-label" x="280" y="155"
+                text-anchor="middle" font-size="22" font-weight="700" font-style="italic"
+                fill="#FFFFFF"
+                style="filter: drop-shadow(0 1.5px 3px #00000060)">
+            Таланты
+          </text>
+          <text class="vc-label" x="280" y="182"
+                text-anchor="middle" font-size="18" font-weight="600" font-style="italic"
+                fill="#FFFFFF" opacity="0.85"
+                style="filter: drop-shadow(0 1.5px 3px #00000060)">
+            и способности
+          </text>
+
+          <text class="vc-label" x="163" y="368"
+                text-anchor="middle" font-size="20" font-weight="700" font-style="italic"
+                fill="#FFFFFF"
+                style="filter: drop-shadow(0 1.5px 3px #00000060)">
+            Свойства
+          </text>
+          <text class="vc-label" x="163" y="392"
+                text-anchor="middle" font-size="20" font-weight="700" font-style="italic"
+                fill="#FFFFFF" opacity="0.85"
+                style="filter: drop-shadow(0 1.5px 3px #00000060)">
+            личности
+          </text>
+
+          <text class="vc-label" x="397" y="378"
+                text-anchor="middle" font-size="24" font-weight="700" font-style="italic"
+                fill="#FFFFFF"
+                style="filter: drop-shadow(0 1.5px 3px #00000060)">
+            Цели
+          </text>
+
+          <!-- Центральная надпись -->
+          <text class="vc-label" x="280" y="295"
+                text-anchor="middle" font-size="16" font-weight="800"
+                fill="#7A4500" filter="url(#vcGlow)">
+            Твоя суть
+          </text>
+          <text class="vc-label" x="280" y="315"
+                text-anchor="middle" font-size="13" font-weight="700"
+                fill="#7A4500" filter="url(#vcGlow)">
+            Точка силы
+          </text>
+        </g>
+
       </svg>
     </div>
+    <p class="visual-caption">
+      Три части тебя — таланты, свойства личности и цели — существуют отдельно.<br>
+      Программа находит точку, где они наконец встречаются.
+    </p>
 
-    <div class="cta-wrap">
+    <div class="cta-wrap" style="margin-top:2.5rem;">
       <a class="cta-btn" href="#quiz" onclick="document.getElementById('quiz').scrollIntoView({behavior:'smooth'});return false;">
-        <svg viewBox="0 0 24 24" fill="currentColor">
+        <svg viewBox="0 0 24 24" fill="currentColor" style="width:20px;height:20px;">
           <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
         </svg>
         Найти свою точку силы
       </a>
       <a class="cta-link" href="https://t.me/aleks33375" target="_blank" rel="noopener">
-        Или написать напрямую → @aleks33375
+        Написать напрямую → @aleks33375
       </a>
     </div>
-
   </div>
 </section>
 
@@ -949,12 +1122,15 @@
 
     </div>
 
-    <div style="text-align:center; margin-top:3rem;">
+    <div class="cta-wrap" style="margin-top:3rem;">
       <a class="cta-btn" href="#quiz" onclick="document.getElementById('quiz').scrollIntoView({behavior:'smooth'});return false;">
         <svg viewBox="0 0 24 24" fill="currentColor" style="width:20px;height:20px;">
           <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
         </svg>
         Найти свою точку силы
+      </a>
+      <a class="cta-link" href="https://t.me/aleks33375" target="_blank" rel="noopener">
+        Написать напрямую → @aleks33375
       </a>
     </div>
 
