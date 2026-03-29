@@ -268,9 +268,9 @@
 
   <!-- ══ БОЛЬШОЙ ЗАГОЛОВОК — CSS 40с цикл ══ -->
   <g class="bigTitle">
-    <text x="360" y="285" text-anchor="middle" font-size="68" font-weight="800" fill="#2C2C2C"
-          stroke="#FFD700" stroke-width="3" paint-order="stroke fill">Раскрытие</text>
-    <text x="360" y="370" text-anchor="middle" font-size="68" font-weight="800" fill="#2C2C2C"
+    <text x="360" y="285" text-anchor="middle" font-size="52" font-weight="800" fill="#2C2C2C"
+          stroke="#FFD700" stroke-width="3" paint-order="stroke fill">Программа раскрытия</text>
+    <text x="360" y="350" text-anchor="middle" font-size="52" font-weight="800" fill="#2C2C2C"
           stroke="#FFD700" stroke-width="3" paint-order="stroke fill">личности</text>
   </g>
 
