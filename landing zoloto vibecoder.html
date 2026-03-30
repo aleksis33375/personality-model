@@ -876,11 +876,6 @@
       Твои таланты, характер и цели просто ещё не встретились в одной точке.
     </p>
 
-    <p class="hero-desc">
-      Структурированная программа, которая находит точку пересечения твоей природы
-      и ИИ-возможностей — место, откуда начинается твой цифровой продукт.
-    </p>
-
     <div class="cta-wrap" style="margin-top:2.5rem;">
       <a class="cta-btn" href="#quiz" onclick="document.getElementById('quiz').scrollIntoView({behavior:'smooth'});return false;">
         <svg viewBox="0 0 24 24" fill="currentColor" style="width:20px;height:20px;">
@@ -1389,11 +1384,15 @@
             <svg viewBox="0 0 24 24" fill="currentColor"><path d="M11.994 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm4.93 6.77-1.68 7.93c-.12.56-.45.7-.91.43l-2.52-1.86-1.21 1.17c-.13.13-.25.25-.51.25l.18-2.58 4.67-4.22c.2-.18-.04-.28-.32-.1L7.43 14.5l-2.47-.77c-.54-.17-.55-.54.11-.8l9.66-3.72c.45-.16.84.11.69.56z"/></svg>
             Обсудить результат с Алексеем
           </a>
-          <button class="btn-save-img" onclick="saveResultAsImage()">
-            <svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
-            Сохранить как фото
-          </button>
+          <div>
+            <button class="btn-save-img" onclick="saveResultAsImage()">
+              <svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
+              Сохранить как фото
+            </button>
+            <p style="font-size:0.72rem;color:#8888aa;margin-top:0.4rem;text-align:center;">Поделись результатом в сторис или с другом</p>
+          </div>
           <button class="btn-restart" onclick="restartQuiz()">Пройти ещё раз</button>
+          <a class="btn-restart" href="#" onclick="window.scrollTo({top:0,behavior:'smooth'});return false;">↑ Наверх</a>
         </div>
       </div>
 
