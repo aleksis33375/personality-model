@@ -444,8 +444,8 @@
       text-align: center;
       padding: 2rem;
       font-size: 0.78rem;
-      color: #44445a;
-      border-top: 1px solid rgba(255,255,255,0.04);
+      color: #8888aa;
+      border-top: 1px solid rgba(255,255,255,0.10);
     }
 
     /* ══════════════════════════════
@@ -660,7 +660,7 @@
     }
 
     .result-title {
-      font-size: clamp(1.3rem, 3.5vw, 2rem);
+      font-size: clamp(1.8rem, 4.5vw, 2.8rem);
       font-weight: 800;
       line-height: 1.2;
       letter-spacing: -0.5px;
@@ -756,16 +756,29 @@
 
     .btn-restart:hover { color: var(--text); }
 
+    .btn-top {
+      font-size: 0.72rem;
+      color: var(--muted);
+      opacity: 0.55;
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-family: inherit;
+      text-decoration: none;
+      transition: opacity 0.2s;
+    }
+    .btn-top:hover { opacity: 1; }
+
     .btn-save-img {
       display: inline-flex;
       align-items: center;
       gap: 0.5rem;
-      padding: 0.65rem 1.5rem;
-      border-radius: 2rem;
+      padding: 1rem 2.4rem;
+      border-radius: 3rem;
       border: 1px solid rgba(255,255,255,0.15);
       background: rgba(255,255,255,0.05);
       color: var(--muted);
-      font-size: 0.85rem;
+      font-size: 1.05rem;
       font-weight: 600;
       font-family: inherit;
       cursor: pointer;
@@ -776,7 +789,7 @@
       color: var(--text);
       background: rgba(255,215,0,0.07);
     }
-    .btn-save-img svg { width: 15px; height: 15px; fill: currentColor; }
+    .btn-save-img svg { width: 20px; height: 20px; fill: currentColor; }
 
     /* ── ЗОНА ГЕНИЯ ── */
     .genius-zone {
@@ -1392,7 +1405,7 @@
             <p style="font-size:0.72rem;color:#8888aa;margin-top:0.4rem;text-align:center;">Поделись результатом в сторис или с другом</p>
           </div>
           <button class="btn-restart" onclick="restartQuiz()">Пройти ещё раз</button>
-          <a class="btn-restart" href="#" onclick="window.scrollTo({top:0,behavior:'smooth'});return false;">↑ Наверх</a>
+          <a class="btn-top" href="#" onclick="window.scrollTo({top:0,behavior:'smooth'});return false;">↑ Наверх</a>
         </div>
       </div>
 
@@ -1695,7 +1708,7 @@
   <div style="padding:1.25rem 1.75rem 1.75rem;background:rgba(255,255,255,0.025);">
     <div id="ecSentence" style="font-size:1rem;font-style:italic;font-weight:700;color:#FFD700;margin-bottom:0.875rem;line-height:1.55;"></div>
     <div id="ecDesc" style="font-size:0.875rem;color:#8888aa;line-height:1.65;"></div>
-    <div style="margin-top:1.25rem;padding-top:0.875rem;border-top:1px solid rgba(255,255,255,0.07);font-size:0.68rem;color:#44445a;letter-spacing:0.03em;">aleksis.ru · ИИ-продукт под твою нишу</div>
+    <div style="margin-top:1.25rem;padding-top:0.875rem;border-top:1px solid rgba(255,255,255,0.07);font-size:0.68rem;color:#8888aa;letter-spacing:0.03em;">aleksis.ru · ИИ-продукт под твою нишу</div>
   </div>
 </div>
 </body>
