@@ -760,6 +760,30 @@
 
     .btn-restart:hover { color: var(--text); }
 
+    /* Priority chips (шаг 4) */
+    .priority-chips {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.75rem;
+      margin: 1.5rem 0;
+    }
+    .priority-chip {
+      padding: 1rem;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 0.75rem;
+      color: var(--text);
+      font-family: inherit;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-align: left;
+      line-height: 1.4;
+    }
+    .priority-chip:hover { background: rgba(255,255,255,0.08); border-color: rgba(255,255,255,0.2); }
+    .priority-chip.selected { border-color: var(--gold); background: rgba(255,215,0,0.1); color: var(--gold); }
+    .step-dot.active.dot-gold { background: var(--gold); }
+
     .btn-top {
       font-size: 0.72rem;
       color: var(--muted);
@@ -1228,21 +1252,40 @@
 
     <div class="quiz-box">
 
-      <div class="quiz-progress">
+      <div class="quiz-progress" style="display:none">
         <div class="progress-track">
-          <div class="progress-fill" id="progressFill" style="width:33%"></div>
+          <div class="progress-fill" id="progressFill" style="width:25%"></div>
         </div>
-        <span class="progress-label" id="progressLabel">Шаг 1 из 3</span>
+        <span class="progress-label" id="progressLabel">Шаг 1 из 4</span>
       </div>
 
-      <div class="step-dots">
-        <div class="step-dot active dot-coral" id="dot0"></div>
+      <div class="step-dots" style="display:none">
+        <div class="step-dot" id="dot0"></div>
         <div class="step-dot" id="dot1"></div>
         <div class="step-dot" id="dot2"></div>
+        <div class="step-dot" id="dot3"></div>
+      </div>
+
+      <!-- ШАГ 0: Имя -->
+      <div class="quiz-step active" id="stepName">
+        <span class="step-tag coral">
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a5 5 0 1 1 0 10A5 5 0 0 1 12 2zm-7 18c0-3.87 3.13-7 7-7s7 3.13 7 7H5z"/></svg>
+          Начало
+        </span>
+        <h3 class="step-question">Как тебя зовут?</h3>
+        <p class="step-hint">Введи имя — и результат квиза будет обращаться к тебе лично. Поле необязательное.</p>
+        <input type="text" class="quiz-input" id="inputName" placeholder="Например: Алексей" maxlength="40" style="padding:0.9rem 1rem;height:auto;">
+        <div class="quiz-nav">
+          <span></span>
+          <button class="btn-next" onclick="startQuiz()">
+            Начать
+            <svg viewBox="0 0 24 24"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6z"/></svg>
+          </button>
+        </div>
       </div>
 
       <!-- ШАГ 1: Таланты и цифровые навыки -->
-      <div class="quiz-step active" id="step0">
+      <div class="quiz-step" id="step0">
         <span class="step-tag coral">
           <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
           Шаг 1 — Таланты и навыки
@@ -1324,8 +1367,31 @@
         </div>
         <div class="quiz-nav">
           <button class="btn-back" onclick="prevStep(2)">← Назад</button>
-          <button class="btn-next" onclick="showResult()">
-            Найти мой продукт
+          <button class="btn-next" onclick="showPriorityStep()">
+            Далее
+            <svg viewBox="0 0 24 24"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6z"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- ШАГ 4: Приоритет -->
+      <div class="quiz-step" id="step3">
+        <span class="step-tag" style="color:var(--gold);background:rgba(255,215,0,0.1);border:1px solid rgba(255,215,0,0.25);display:inline-flex;align-items:center;gap:0.35rem;padding:0.3rem 0.75rem;border-radius:2rem;font-size:0.75rem;font-weight:700;">
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          Шаг 4 — Приоритет
+        </span>
+        <h3 class="step-question">Что тебе важнее<br>прямо сейчас?</h3>
+        <p class="step-hint">Выбери одно — это уточнит результат под твой текущий фокус.</p>
+        <div class="priority-chips" id="priorityChips">
+          <button class="priority-chip" data-value="income" onclick="selectPriority(this)">💰 Быстрый доход</button>
+          <button class="priority-chip" data-value="meaning" onclick="selectPriority(this)">🌱 Смысл и влияние</button>
+          <button class="priority-chip" data-value="freedom" onclick="selectPriority(this)">🕊️ Свобода и время</button>
+          <button class="priority-chip" data-value="status" onclick="selectPriority(this)">⭐ Признание в нише</button>
+        </div>
+        <div class="quiz-nav">
+          <button class="btn-back" onclick="prevStep(3)">← Назад</button>
+          <button class="btn-next" id="btnShowResult" onclick="showResult()" disabled style="opacity:0.4;cursor:not-allowed;">
+            Узнать результат
             <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
           </button>
         </div>
@@ -1334,8 +1400,8 @@
       <!-- РЕЗУЛЬТАТ -->
       <div class="quiz-result" id="quizResult">
         <div class="result-header">
-          <div class="result-badge">Твой цифровой продукт</div>
-          <h3 class="result-title">Вот что нужно создавать —<br><span class="grad-text">именно тебе</span></h3>
+          <div class="result-badge" id="resultBadge">Твой цифровой продукт</div>
+          <h3 class="result-title" id="resultTitle">Вот что нужно создавать —<br><span class="grad-text">именно тебе</span></h3>
         </div>
 
         <div class="result-venn">
@@ -1447,6 +1513,11 @@
 </footer>
 
 <script>
+  // ── Состояние ──
+  let userName = '';
+  let userPriority = '';
+
+  // ── Чипы ──
   document.querySelectorAll('.chip').forEach(chip => {
     chip.addEventListener('click', () => {
       const targetId = chip.dataset.target;
@@ -1454,19 +1525,13 @@
       const val = chip.textContent.trim();
       if (chip.classList.contains('selected')) {
         let v = input.value;
-        if (v.includes(', ' + val)) {
-          v = v.replace(', ' + val, '');
-        } else if (v.includes(val + ', ')) {
-          v = v.replace(val + ', ', '');
-        } else {
-          v = v.replace(val, '');
-        }
+        if (v.includes(', ' + val)) v = v.replace(', ' + val, '');
+        else if (v.includes(val + ', ')) v = v.replace(val + ', ', '');
+        else v = v.replace(val, '');
         input.value = v.trim();
         chip.classList.remove('selected');
       } else {
-        if (input.value && !input.value.endsWith(', ') && !input.value.endsWith('\n')) {
-          input.value += ', ';
-        }
+        if (input.value && !input.value.endsWith(', ') && !input.value.endsWith('\n')) input.value += ', ';
         input.value += val;
         chip.classList.add('selected');
       }
@@ -1474,9 +1539,10 @@
     });
   });
 
-  const TOTAL = 3;
-  const progressWidths = ['33%', '66%', '100%'];
-  const dotClasses = ['dot-coral', 'dot-green', 'dot-blue'];
+  // ── Прогресс ──
+  const TOTAL = 4;
+  const progressWidths = ['25%', '50%', '75%', '100%'];
+  const dotClasses = ['dot-coral', 'dot-green', 'dot-blue', 'dot-gold'];
 
   function updateProgress(step) {
     document.getElementById('progressFill').style.width = progressWidths[step];
@@ -1484,11 +1550,12 @@
     for (let i = 0; i < TOTAL; i++) {
       const dot = document.getElementById('dot' + i);
       dot.className = 'step-dot';
-      if (i < step)  dot.classList.add('done');
+      if (i < step) dot.classList.add('done');
       if (i === step) dot.classList.add('active', dotClasses[i]);
     }
   }
 
+  // ── Ошибка ──
   function showError(input) {
     input.style.borderColor = 'rgba(217,112,112,0.6)';
     input.focus();
@@ -1506,12 +1573,19 @@
     }, 2500);
   }
 
+  // ── Навигация ──
+  function startQuiz() {
+    userName = document.getElementById('inputName').value.trim();
+    document.getElementById('stepName').classList.remove('active');
+    document.getElementById('step0').classList.add('active');
+    document.querySelector('.quiz-progress').style.display = '';
+    document.querySelector('.step-dots').style.display = '';
+    updateProgress(0);
+  }
+
   function nextStep(current) {
     const input = document.getElementById('input' + current);
-    if (!input.value.trim()) {
-      showError(input);
-      return;
-    }
+    if (!input.value.trim()) { showError(input); return; }
     document.getElementById('step' + current).classList.remove('active');
     document.getElementById('step' + (current + 1)).classList.add('active');
     updateProgress(current + 1);
@@ -1523,28 +1597,148 @@
     updateProgress(current - 1);
   }
 
+  function showPriorityStep() {
+    const input = document.getElementById('input2');
+    if (!input.value.trim()) { showError(input); return; }
+    document.getElementById('step2').classList.remove('active');
+    document.getElementById('step3').classList.add('active');
+    updateProgress(3);
+  }
+
+  function selectPriority(btn) {
+    document.querySelectorAll('.priority-chip').forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected');
+    userPriority = btn.dataset.value;
+    const btnResult = document.getElementById('btnShowResult');
+    btnResult.disabled = false;
+    btnResult.style.opacity = '';
+    btnResult.style.cursor = '';
+  }
+
+  // ── Зоны (архетипы) ──
+  const ZONES = [
+    {
+      id: 'assistant',
+      icon: '🤖',
+      archetype: 'Строитель нишевых ассистентов',
+      badgeText: 'Архетип · ИИ-ассистент',
+      name: 'ИИ-ассистент под нишу',
+      sentence: 'Ты строишь персонального GPT, который знает нишу лучше любого сотрудника.',
+      desc: 'Твоя сила — глубокое понимание конкретной области. Ты создаёшь ИИ-ассистента для юристов, маркетологов, коучей или специалистов своей ниши. Узкая специализация = сильный результат.',
+      keywords: ['анализ', 'разбираться', 'система', 'процесс', 'нишу', 'специал', 'юрист', 'консулт', 'структур', 'закономерн']
+    },
+    {
+      id: 'content',
+      icon: '✍️',
+      archetype: 'Создатель контент-систем',
+      badgeText: 'Архетип · Контент',
+      name: 'Система генерации контента',
+      sentence: 'Ты создаёшь контент-машину: посты, прогревы, сценарии — за минуты вместо часов.',
+      desc: 'Твоя природная сила — в текстах, идеях и коммуникации. Ты строишь системы, которые генерируют контент автоматически: для себя или для клиентов. Это продукт, который экономит десятки часов.',
+      keywords: ['текст', 'пис', 'контент', 'пост', 'сценар', 'объяснять', 'коммуниц', 'слов', 'историй', 'прогрев', 'медиа', 'упаков']
+    },
+    {
+      id: 'funnel',
+      icon: '🚀',
+      archetype: 'Архитектор продаж',
+      badgeText: 'Архетип · Продажи',
+      name: 'Нейро-воронка и продажи',
+      sentence: 'Ты строишь цифрового продавца: воронки, скрипты, автоматизацию продаж.',
+      desc: 'Ты понимаешь, как работают продажи и что движет людьми к решению. Твой продукт — автоворонки и системы продаж на базе ИИ. Это то, что генерирует деньги 24/7 без твоего участия.',
+      keywords: ['продавать', 'продаж', 'убеждать', 'воронк', 'клиент', 'доход', 'зарабатыв', 'деньги', 'монетиз', 'запустить']
+    },
+    {
+      id: 'education',
+      icon: '📚',
+      archetype: 'Упаковщик экспертизы',
+      badgeText: 'Архетип · Образование',
+      name: 'Образовательный продукт',
+      sentence: 'Ты упаковываешь экспертизу в курс, программу или методологию — за день.',
+      desc: 'Твоя сила — в передаче знаний и структурировании информации. Ты создаёшь обучающие продукты, которые масштабируют твою экспертность без личного времени. Из хаоса в голове — в продукт.',
+      keywords: ['обуч', 'учить', 'курс', 'знани', 'эксперт', 'передавать', 'наставн', 'методолог', 'программ', 'обучени', 'масштабир']
+    },
+    {
+      id: 'analytics',
+      icon: '🔍',
+      archetype: 'Аналитик-стратег',
+      badgeText: 'Архетип · Аналитика',
+      name: 'Аналитическая система',
+      sentence: 'Ты строишь инструменты анализа ЦА, конкурентов и стратегии продукта.',
+      desc: 'Твоя природа — исследовать, находить паттерны и выдавать стратегические решения. Ты создаёшь аналитические системы для бизнеса: то, за что раньше платили сотни тысяч консалтерам.',
+      keywords: ['анализ', 'исследов', 'данные', 'стратег', 'конкурент', 'аудитор', 'рынок', 'тренды', 'закономерн', 'решени']
+    },
+    {
+      id: 'automation',
+      icon: '⚡',
+      archetype: 'Инженер автоматизации',
+      badgeText: 'Архетип · Автоматизация',
+      name: 'Автоматизация и процессы',
+      sentence: 'Ты строишь системы, которые экономят десятки часов в неделю.',
+      desc: 'Тебя вдохновляет эффективность и убирание рутины. Твой продукт — ИИ-автоматизация для бизнеса: планировщики, обработка задач, ассистенты для команд. Ты возвращаешь людям самый ценный ресурс — время.',
+      keywords: ['автоматиз', 'оптимиз', 'систем', 'процесс', 'рутин', 'эффективн', 'время', 'задач', 'планир', 'быстро']
+    },
+    {
+      id: 'visual',
+      icon: '🎨',
+      archetype: 'Визуальный эксперт',
+      badgeText: 'Архетип · Визуал',
+      name: 'Визуал и упаковка эксперта',
+      sentence: 'Ты создаёшь нейрофотосессии, баннеры, обложки — на уровне рынка, без дизайнера.',
+      desc: 'Твоя сила — в визуальном мышлении и эстетике. Ты строишь продукты в области генерации визуала: нейрофотосессии, карточки товаров, упаковка экспертов. Это востребованная услуга с высоким чеком.',
+      keywords: ['визуал', 'дизайн', 'рисовать', 'красот', 'эстетик', 'образ', 'фото', 'обложк', 'упаков', 'создавать']
+    },
+    {
+      id: 'consulting',
+      icon: '💡',
+      archetype: 'Нейро-консультант',
+      badgeText: 'Архетип · Консалтинг',
+      name: 'Нейро-консалтинг',
+      sentence: 'Ты помогаешь бизнесу быстро принимать решения с помощью ИИ.',
+      desc: 'Ты мыслишь стратегически и видишь точки роста там, где другие видят хаос. Твой продукт — нейро-консалтинг: стратегии, гипотезы масштабирования, быстрое принятие решений. Высокий чек, высокий спрос.',
+      keywords: ['стратег', 'консалт', 'помогать бизнесу', 'рост', 'масштаб', 'точки роста', 'предприним', 'бизнес', 'лидер', 'влия']
+    }
+  ];
+
+  // ── Определение зоны с учётом приоритета ──
+  function detectZone(s, c, g, priority) {
+    const all = (s + ' ' + c + ' ' + g).toLowerCase();
+    const scores = ZONES.map(zone => {
+      let score = 0;
+      zone.keywords.forEach(kw => { if (all.includes(kw)) score++; });
+      if (priority === 'income'  && (zone.id === 'funnel'     || zone.id === 'automation')) score += 2;
+      if (priority === 'meaning' && (zone.id === 'education'  || zone.id === 'consulting')) score += 2;
+      if (priority === 'freedom' && (zone.id === 'automation' || zone.id === 'assistant'))  score += 2;
+      if (priority === 'status'  && (zone.id === 'content'    || zone.id === 'visual'))     score += 2;
+      return { zone, score };
+    });
+    scores.sort((a, b) => b.score - a.score);
+    return scores[0].zone;
+  }
+
+  // ── Показать результат ──
   function showResult() {
     const v0 = document.getElementById('input0').value.trim();
     const v1 = document.getElementById('input1').value.trim();
     const v2 = document.getElementById('input2').value.trim();
-
-    if (!v2) {
-      showError(document.getElementById('input2'));
-      return;
-    }
 
     document.getElementById('r0').textContent = v0;
     document.getElementById('r1').textContent = v1;
     document.getElementById('r2').textContent = v2;
     document.getElementById('formulaText').textContent = buildFormula(v0, v1, v2);
 
-    const zone = detectZone(v0, v1, v2);
+    const zone = detectZone(v0, v1, v2, userPriority);
     document.getElementById('gzIcon').textContent     = zone.icon;
     document.getElementById('gzName').textContent     = zone.name;
     document.getElementById('gzSentence').textContent = zone.sentence;
     document.getElementById('gzDesc').textContent     = zone.desc;
 
-    document.getElementById('step2').classList.remove('active');
+    // Б + А: динамический заголовок с именем и архетипом
+    const nameStr = userName ? `${userName}, ты — ` : 'Ты — ';
+    document.getElementById('resultTitle').innerHTML =
+      `${nameStr}<span class="grad-text">${zone.archetype}</span>`;
+    document.getElementById('resultBadge').textContent = zone.badgeText;
+
+    document.getElementById('step3').classList.remove('active');
     document.querySelector('.quiz-progress').style.display = 'none';
     document.querySelector('.step-dots').style.display = 'none';
     document.getElementById('quizResult').classList.add('active');
@@ -1558,85 +1752,6 @@
     return `Твоя сила — ${s}. В сочетании с тем, что ты умеешь ${c}, это даёт тебе точный вектор: ${g}.`;
   }
 
-  // Зоны — адаптированы под типы ИИ-продуктов
-  const ZONES = [
-    {
-      id: 'assistant',
-      icon: '🤖',
-      name: 'ИИ-ассистент под нишу',
-      sentence: 'Ты строишь персонального GPT, который знает нишу лучше любого сотрудника.',
-      desc: 'Твоя сила — глубокое понимание конкретной области. Ты создаёшь ИИ-ассистента для юристов, маркетологов, коучей или специалистов своей ниши. Узкая специализация = сильный результат.',
-      keywords: ['анализ', 'разбираться', 'система', 'процесс', 'нишу', 'специал', 'юрист', 'консулт', 'структур', 'закономерн']
-    },
-    {
-      id: 'content',
-      icon: '✍️',
-      name: 'Система генерации контента',
-      sentence: 'Ты создаёшь контент-машину: посты, прогревы, сценарии — за минуты вместо часов.',
-      desc: 'Твоя природная сила — в текстах, идеях и коммуникации. Ты строишь системы, которые генерируют контент автоматически: для себя или для клиентов. Это продукт, который экономит десятки часов.',
-      keywords: ['текст', 'пис', 'контент', 'пост', 'сценар', 'объяснять', 'коммуниц', 'слов', 'историй', 'прогрев', 'медиа', 'упаков']
-    },
-    {
-      id: 'funnel',
-      icon: '🚀',
-      name: 'Нейро-воронка и продажи',
-      sentence: 'Ты строишь цифрового продавца: воронки, скрипты, автоматизацию продаж.',
-      desc: 'Ты понимаешь, как работают продажи и что движет людьми к решению. Твой продукт — автоворонки и системы продаж на базе ИИ. Это то, что генерирует деньги 24/7 без твоего участия.',
-      keywords: ['продавать', 'продаж', 'убеждать', 'воронк', 'клиент', 'доход', 'зарабатыв', 'деньги', 'монетиз', 'запустить']
-    },
-    {
-      id: 'education',
-      icon: '📚',
-      name: 'Образовательный продукт',
-      sentence: 'Ты упаковываешь экспертизу в курс, программу или методологию — за день.',
-      desc: 'Твоя сила — в передаче знаний и структурировании информации. Ты создаёшь обучающие продукты, которые масштабируют твою экспертность без личного времени. Из хаоса в голове — в продукт.',
-      keywords: ['обуч', 'учить', 'курс', 'знани', 'эксперт', 'передавать', 'наставн', 'методолог', 'программ', 'обучени', 'масштабир']
-    },
-    {
-      id: 'analytics',
-      icon: '🔍',
-      name: 'Аналитическая система',
-      sentence: 'Ты строишь инструменты анализа ЦА, конкурентов и стратегии продукта.',
-      desc: 'Твоя природа — исследовать, находить паттерны и выдавать стратегические решения. Ты создаёшь аналитические системы для бизнеса: то, за что раньше платили сотни тысяч консалтерам.',
-      keywords: ['анализ', 'исследов', 'данные', 'стратег', 'конкурент', 'аудитор', 'рынок', 'тренды', 'закономерн', 'решени']
-    },
-    {
-      id: 'automation',
-      icon: '⚡',
-      name: 'Автоматизация и процессы',
-      sentence: 'Ты строишь системы, которые экономят десятки часов в неделю.',
-      desc: 'Тебя вдохновляет эффективность и убирание рутины. Твой продукт — ИИ-автоматизация для бизнеса: планировщики, обработка задач, ассистенты для команд. Ты возвращаешь людям самый ценный ресурс — время.',
-      keywords: ['автоматиз', 'оптимиз', 'систем', 'процесс', 'рутин', 'эффективн', 'время', 'задач', 'планир', 'быстро']
-    },
-    {
-      id: 'visual',
-      icon: '🎨',
-      name: 'Визуал и упаковка эксперта',
-      sentence: 'Ты создаёшь нейрофотосессии, баннеры, обложки — на уровне рынка, без дизайнера.',
-      desc: 'Твоя сила — в визуальном мышлении и эстетике. Ты строишь продукты в области генерации визуала: нейрофотосессии, карточки товаров, упаковка экспертов. Это востребованная услуга с высоким чеком.',
-      keywords: ['визуал', 'дизайн', 'рисовать', 'красот', 'эстетик', 'образ', 'фото', 'обложк', 'упаков', 'создавать']
-    },
-    {
-      id: 'consulting',
-      icon: '💡',
-      name: 'Нейро-консалтинг',
-      sentence: 'Ты помогаешь бизнесу быстро принимать решения с помощью ИИ.',
-      desc: 'Ты мыслишь стратегически и видишь точки роста там, где другие видят хаос. Твой продукт — нейро-консалтинг: стратегии, гипотезы масштабирования, быстрое принятие решений. Высокий чек, высокий спрос.',
-      keywords: ['стратег', 'консалт', 'помогать бизнесу', 'рост', 'масштаб', 'точки роста', 'предприним', 'бизнес', 'лидер', 'влия']
-    }
-  ];
-
-  function detectZone(s, c, g) {
-    const all = (s + ' ' + c + ' ' + g).toLowerCase();
-    const scores = ZONES.map(zone => {
-      let score = 0;
-      zone.keywords.forEach(kw => { if (all.includes(kw)) score++; });
-      return { zone, score };
-    });
-    scores.sort((a, b) => b.score - a.score);
-    return scores[0].score > 0 ? scores[0].zone : ZONES[0];
-  }
-
   function firstPhrase(text) {
     const clean = text.trim().replace(/^[,.\s]+/, '');
     const match = clean.match(/^([^,;\n]{3,60})/);
@@ -1647,9 +1762,10 @@
     return clean.substring(0, 60).trim();
   }
 
+  // ── Сохранение фото ──
   function saveResultAsImage() {
     const card = document.getElementById('exportCard');
-    card.querySelector('#ecLabel').textContent = 'Твой тип цифрового продукта';
+    card.querySelector('#ecLabel').textContent = document.getElementById('resultBadge').textContent;
     card.querySelector('#ecIcon').textContent  = document.getElementById('gzIcon').textContent;
     card.querySelector('#ecName').textContent  = document.getElementById('gzName').textContent;
     card.querySelector('#ecSentence').textContent = document.getElementById('gzSentence').textContent;
@@ -1659,7 +1775,7 @@
     card.style.left = '0';
     card.style.zIndex = '-9999';
     card.style.display = 'block';
-    void card.offsetHeight; // принудительный reflow перед захватом
+    void card.offsetHeight;
 
     const btn = document.querySelector('.btn-save-img');
     btn.disabled = true;
@@ -1670,32 +1786,33 @@
       btn.innerHTML = '<svg viewBox="0 0 24 24" style="width:15px;height:15px;fill:currentColor"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg> Сохранить как фото';
     };
 
-    html2canvas(card, {
-      backgroundColor: '#0e0e1a',
-      scale: 2,
-      useCORS: true,
-      logging: false
-    }).then(canvas => {
-      card.style.display = 'none';
-      const link = document.createElement('a');
-      link.download = 'мой-продукт.png';
-      link.href = canvas.toDataURL('image/png');
-      link.click();
-      resetBtn();
-    }).catch(() => {
-      card.style.display = 'none';
-      resetBtn();
-    });
+    html2canvas(card, { backgroundColor: '#0e0e1a', scale: 2, useCORS: true, logging: false })
+      .then(canvas => {
+        card.style.display = 'none';
+        const link = document.createElement('a');
+        link.download = 'мой-продукт.png';
+        link.href = canvas.toDataURL('image/png');
+        link.click();
+        resetBtn();
+      }).catch(() => { card.style.display = 'none'; resetBtn(); });
   }
 
+  // ── Рестарт ──
   function restartQuiz() {
+    userName = '';
+    userPriority = '';
     ['input0','input1','input2'].forEach(id => { document.getElementById(id).value = ''; });
+    document.getElementById('inputName').value = '';
     document.querySelectorAll('.chip').forEach(c => c.classList.remove('selected'));
+    document.querySelectorAll('.priority-chip').forEach(c => c.classList.remove('selected'));
+    const btnResult = document.getElementById('btnShowResult');
+    btnResult.disabled = true; btnResult.style.opacity = '0.4'; btnResult.style.cursor = 'not-allowed';
     document.getElementById('quizResult').classList.remove('active');
-    document.querySelector('.quiz-progress').style.display = '';
-    document.querySelector('.step-dots').style.display = '';
-    document.getElementById('step0').classList.add('active');
-    updateProgress(0);
+    document.getElementById('step0').classList.remove('active');
+    document.getElementById('step3').classList.remove('active');
+    document.querySelector('.quiz-progress').style.display = 'none';
+    document.querySelector('.step-dots').style.display = 'none';
+    document.getElementById('stepName').classList.add('active');
     document.getElementById('quiz').scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 </script>

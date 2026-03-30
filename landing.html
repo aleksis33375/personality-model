@@ -512,6 +512,7 @@
     .step-dot.active.dot-coral { background: var(--coral); }
     .step-dot.active.dot-green { background: var(--green); }
     .step-dot.active.dot-blue  { background: var(--blue); }
+    .step-dot.active.dot-gold  { background: var(--gold); }
 
     /* Шаг */
     .quiz-step { display: none; }
@@ -866,6 +867,41 @@
       font-size: 0.88rem;
       color: var(--muted);
       line-height: 1.6;
+    }
+
+    /* ── ПРИОРИТЕТ-ЧИПЫ ── */
+    .priority-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      margin-top: 1.5rem;
+    }
+
+    .priority-chip {
+      flex: 1 1 calc(50% - 0.375rem);
+      padding: 0.875rem 1rem;
+      border-radius: 0.875rem;
+      border: 1px solid rgba(255,255,255,0.1);
+      background: rgba(255,255,255,0.03);
+      color: var(--muted);
+      font-size: 0.9rem;
+      font-weight: 600;
+      font-family: inherit;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-align: center;
+    }
+
+    .priority-chip:hover {
+      border-color: rgba(255,215,0,0.3);
+      color: var(--text);
+      background: rgba(255,215,0,0.05);
+    }
+
+    .priority-chip.selected {
+      border-color: var(--gold);
+      color: var(--gold);
+      background: rgba(255,215,0,0.1);
     }
 
     /* ── АДАПТИВ ── */
@@ -1278,22 +1314,40 @@
     <div class="quiz-box">
 
       <!-- Прогресс -->
-      <div class="quiz-progress">
+      <div class="quiz-progress" style="display:none">
         <div class="progress-track">
-          <div class="progress-fill" id="progressFill" style="width:33%"></div>
+          <div class="progress-fill" id="progressFill" style="width:25%"></div>
         </div>
-        <span class="progress-label" id="progressLabel">Шаг 1 из 3</span>
+        <span class="progress-label" id="progressLabel">1 из 4</span>
       </div>
 
       <!-- Точки -->
-      <div class="step-dots">
-        <div class="step-dot active dot-coral" id="dot0"></div>
+      <div class="step-dots" style="display:none">
+        <div class="step-dot" id="dot0"></div>
         <div class="step-dot" id="dot1"></div>
         <div class="step-dot" id="dot2"></div>
+        <div class="step-dot" id="dot3"></div>
+      </div>
+
+      <!-- ШАГ ИМЕНИ -->
+      <div class="quiz-step active" id="stepName">
+        <span class="step-tag coral" style="background:rgba(255,215,0,0.08);color:var(--gold);border-color:rgba(255,215,0,0.2);">
+          ✦ Персонализация
+        </span>
+        <h3 class="step-question">Как тебя зовут?</h3>
+        <p class="step-hint">Необязательно — но так результат будет личным. Можешь пропустить.</p>
+        <input class="quiz-input" id="inputName" type="text" placeholder="Твоё имя…" style="min-height:auto;padding:0.875rem 1.25rem;resize:none;" autocomplete="given-name"/>
+        <div class="quiz-nav">
+          <span></span>
+          <button class="btn-next" onclick="startQuiz()">
+            Начать
+            <svg viewBox="0 0 24 24"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6z"/></svg>
+          </button>
+        </div>
       </div>
 
       <!-- ШАГ 1: Таланты -->
-      <div class="quiz-step active" id="step0">
+      <div class="quiz-step" id="step0">
         <span class="step-tag coral">
           <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
           Шаг 1 — Таланты
@@ -1369,7 +1423,30 @@
         </div>
         <div class="quiz-nav">
           <button class="btn-back" onclick="prevStep(2)">← Назад</button>
-          <button class="btn-next" onclick="showResult()">
+          <button class="btn-next" onclick="showPriorityStep()">
+            Далее
+            <svg viewBox="0 0 24 24"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6z"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- ШАГ 4: Приоритет -->
+      <div class="quiz-step" id="step3">
+        <span class="step-tag" style="color:var(--gold);background:rgba(255,215,0,0.08);border:1px solid rgba(255,215,0,0.2);">
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          Шаг 4 — Приоритет
+        </span>
+        <h3 class="step-question">Что для тебя важнее всего<br>прямо сейчас?</h3>
+        <p class="step-hint">Выбери один вариант — это поможет уточнить твою зону гения.</p>
+        <div class="priority-chips">
+          <button class="priority-chip" data-value="mission" onclick="selectPriority(this)">💡 Найти призвание</button>
+          <button class="priority-chip" data-value="business" onclick="selectPriority(this)">🚀 Построить своё дело</button>
+          <button class="priority-chip" data-value="healing" onclick="selectPriority(this)">🌿 Помогать другим</button>
+          <button class="priority-chip" data-value="leadership" onclick="selectPriority(this)">⚡ Проявить лидерство</button>
+        </div>
+        <div class="quiz-nav">
+          <button class="btn-back" onclick="prevPriorityStep()">← Назад</button>
+          <button class="btn-next" id="btnShowResult" onclick="showResult()" disabled>
             Найти точку силы
             <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
           </button>
@@ -1379,8 +1456,8 @@
       <!-- РЕЗУЛЬТАТ -->
       <div class="quiz-result" id="quizResult">
         <div class="result-header">
-          <div class="result-badge">Твоя точка силы</div>
-          <h3 class="result-title">Вот где всё складывается<br><span class="grad-text">в единое целое</span></h3>
+          <div class="result-badge" id="resultBadge">Твоя точка силы</div>
+          <h3 class="result-title" id="resultTitle">Вот где всё складывается<br><span class="grad-text">в единое целое</span></h3>
         </div>
 
         <!-- Venn с результатами -->
@@ -1496,6 +1573,10 @@
 </footer>
 
 <script>
+  // ── Состояние ──
+  let userName = '';
+  let userPriority = '';
+
   // ── Чипы-подсказки ──
   document.querySelectorAll('.chip').forEach(chip => {
     chip.addEventListener('click', () => {
@@ -1524,14 +1605,24 @@
     });
   });
 
+  // ── Запуск квиза (после имени) ──
+  function startQuiz() {
+    userName = (document.getElementById('inputName').value || '').trim();
+    document.getElementById('stepName').classList.remove('active');
+    document.querySelector('.quiz-progress').style.display = '';
+    document.querySelector('.step-dots').style.display = '';
+    document.getElementById('step0').classList.add('active');
+    updateProgress(0);
+  }
+
   // ── Навигация по шагам ──
-  const TOTAL = 3;
-  const progressWidths = ['33%', '66%', '100%'];
-  const dotClasses = ['dot-coral', 'dot-green', 'dot-blue'];
+  const TOTAL = 4;
+  const progressWidths = ['25%', '50%', '75%', '100%'];
+  const dotClasses = ['dot-coral', 'dot-green', 'dot-blue', 'dot-gold'];
 
   function updateProgress(step) {
     document.getElementById('progressFill').style.width = progressWidths[step];
-    document.getElementById('progressLabel').textContent = `Шаг ${step + 1} из ${TOTAL}`;
+    document.getElementById('progressLabel').textContent = `${step + 1} из ${TOTAL}`;
     for (let i = 0; i < TOTAL; i++) {
       const dot = document.getElementById('dot' + i);
       dot.className = 'step-dot';
@@ -1576,16 +1667,36 @@
     updateProgress(prev);
   }
 
+  // ── Шаг приоритета ──
+  function showPriorityStep() {
+    const input2 = document.getElementById('input2');
+    if (!input2.value.trim()) {
+      showError(input2);
+      return;
+    }
+    document.getElementById('step2').classList.remove('active');
+    document.getElementById('step3').classList.add('active');
+    updateProgress(3);
+  }
+
+  function prevPriorityStep() {
+    document.getElementById('step3').classList.remove('active');
+    document.getElementById('step2').classList.add('active');
+    updateProgress(2);
+  }
+
+  function selectPriority(el) {
+    document.querySelectorAll('.priority-chip').forEach(c => c.classList.remove('selected'));
+    el.classList.add('selected');
+    userPriority = el.dataset.value;
+    document.getElementById('btnShowResult').disabled = false;
+  }
+
   // ── Показ результата ──
   function showResult() {
     const v0 = document.getElementById('input0').value.trim();
     const v1 = document.getElementById('input1').value.trim();
     const v2 = document.getElementById('input2').value.trim();
-
-    if (!v2) {
-      showError(document.getElementById('input2'));
-      return;
-    }
 
     // Заполняем блоки
     document.getElementById('r0').textContent = v0;
@@ -1596,14 +1707,21 @@
     document.getElementById('formulaText').textContent = buildFormula(v0, v1, v2);
 
     // Определяем зону гения
-    const zone = detectZone(v0, v1, v2);
-    document.getElementById('gzIcon').textContent   = zone.icon;
-    document.getElementById('gzName').textContent   = zone.name;
+    const zone = detectZone(v0, v1, v2, userPriority);
+    document.getElementById('gzIcon').textContent     = zone.icon;
+    document.getElementById('gzName').textContent     = zone.name;
     document.getElementById('gzSentence').textContent = zone.sentence;
-    document.getElementById('gzDesc').textContent   = zone.desc;
+    document.getElementById('gzDesc').textContent     = zone.desc;
+
+    // Динамичный заголовок с именем и архетипом
+    const resultBadge = document.getElementById('resultBadge');
+    const resultTitle = document.getElementById('resultTitle');
+    resultBadge.textContent = zone.badgeText;
+    const nameStr = userName ? `${userName}, ты — ` : 'Ты — ';
+    resultTitle.innerHTML = nameStr + '<span class="grad-text">' + zone.archetype + '</span>';
 
     // Скрываем прогресс, показываем результат
-    document.getElementById('step2').classList.remove('active');
+    document.getElementById('step3').classList.remove('active');
     document.querySelector('.quiz-progress').style.display = 'none';
     document.querySelector('.step-dots').style.display = 'none';
     document.getElementById('quizResult').classList.add('active');
@@ -1613,7 +1731,6 @@
   }
 
   function buildFormula(talents, character, goals) {
-    // Берём первую значимую фразу из каждого блока
     const t = firstPhrase(talents);
     const c = firstPhrase(character);
     const g = firstPhrase(goals);
@@ -1624,6 +1741,8 @@
   const ZONES = [
     {
       id: 'mission',
+      archetype: 'Носитель миссии',
+      badgeText: 'Твоя точка силы',
       icon: '🌟',
       name: 'Призвание / Миссия',
       sentence: 'Когда делаешь то, что естественно получается — и при этом наполняет тебя смыслом.',
@@ -1632,6 +1751,8 @@
     },
     {
       id: 'creativity',
+      archetype: 'Творческий созидатель',
+      badgeText: 'Твоя точка силы',
       icon: '🎨',
       name: 'Творчество и самовыражение',
       sentence: 'Искусство, музыка, писательство, дизайн — всё, что позволяет выражать внутренний мир уникальным способом.',
@@ -1640,6 +1761,8 @@
     },
     {
       id: 'business',
+      archetype: 'Предприниматель',
+      badgeText: 'Твоя точка силы',
       icon: '🚀',
       name: 'Предпринимательство',
       sentence: 'Талант + желание решать проблемы = создание продуктов и бизнеса, которые меняют жизни других.',
@@ -1648,6 +1771,8 @@
     },
     {
       id: 'leadership',
+      archetype: 'Лидер и вдохновитель',
+      badgeText: 'Твоя точка силы',
       icon: '⚡',
       name: 'Лидерство и влияние',
       sentence: 'Вдохновлять других, вести за собой, строить сообщества вокруг идей.',
@@ -1656,6 +1781,8 @@
     },
     {
       id: 'teaching',
+      archetype: 'Наставник',
+      badgeText: 'Твоя точка силы',
       icon: '📚',
       name: 'Обучение и передача знаний',
       sentence: 'Коучинг, менторство, преподавание — делиться тем, что знаешь, и помогать другим расти.',
@@ -1664,6 +1791,8 @@
     },
     {
       id: 'innovation',
+      archetype: 'Инноватор',
+      badgeText: 'Твоя точка силы',
       icon: '💡',
       name: 'Инновации',
       sentence: 'Создание нового — технологий, методов, подходов, которых раньше не существовало.',
@@ -1672,6 +1801,8 @@
     },
     {
       id: 'healing',
+      archetype: 'Целитель и опора',
+      badgeText: 'Твоя точка силы',
       icon: '🌿',
       name: 'Исцеление и помощь',
       sentence: 'Психология, коучинг, медицина, социальная работа — помогать людям трансформироваться.',
@@ -1680,33 +1811,41 @@
     }
   ];
 
-  function detectZone(t, c, g) {
+  function detectZone(t, c, g, priority) {
     const all = (t + ' ' + c + ' ' + g).toLowerCase();
     const scores = ZONES.map(zone => {
       let score = 0;
-      zone.keywords.forEach(kw => {
-        if (all.includes(kw)) score++;
-      });
+      zone.keywords.forEach(kw => { if (all.includes(kw)) score++; });
       return { zone, score };
     });
+    // Буст приоритета
+    const boosts = {
+      mission:    { mission: 2, teaching: 1 },
+      business:   { business: 2, innovation: 1 },
+      healing:    { healing: 2, mission: 1 },
+      leadership: { leadership: 2, creativity: 1 }
+    };
+    if (priority && boosts[priority]) {
+      scores.forEach(s => {
+        const b = boosts[priority][s.zone.id];
+        if (b) s.score += b;
+      });
+    }
     scores.sort((a, b) => b.score - a.score);
-    // Если ничья или нет совпадений — берём «Призвание» как дефолт
     return scores[0].score > 0 ? scores[0].zone : ZONES[0];
   }
 
   function firstPhrase(text) {
-    // Берём до первой запятой, точки с запятой или перевода строки — не более 60 символов
     const clean = text.trim().replace(/^[,.\s]+/, '');
     const match = clean.match(/^([^,;\n]{3,60})/);
     if (match) {
       let s = match[1].trim();
-      // Убираем заглавную, чтобы вписывалось в предложение
       return s.charAt(0).toLowerCase() + s.slice(1);
     }
     return clean.substring(0, 60).trim();
   }
 
-  // ── Рестарт ──
+  // ── Сохранение фото ──
   function saveResultAsImage() {
     const card = document.getElementById('exportCard');
     card.querySelector('#ecLabel').textContent = 'Твоя зона гения';
@@ -1719,7 +1858,7 @@
     card.style.left = '0';
     card.style.zIndex = '-9999';
     card.style.display = 'block';
-    void card.offsetHeight; // принудительный reflow перед захватом
+    void card.offsetHeight;
 
     const btn = document.querySelector('.btn-save-img');
     btn.disabled = true;
@@ -1748,16 +1887,21 @@
     });
   }
 
+  // ── Рестарт ──
   function restartQuiz() {
+    userName = '';
+    userPriority = '';
     ['input0','input1','input2'].forEach(id => {
       document.getElementById(id).value = '';
     });
+    document.getElementById('inputName').value = '';
     document.querySelectorAll('.chip').forEach(c => c.classList.remove('selected'));
+    document.querySelectorAll('.priority-chip').forEach(c => c.classList.remove('selected'));
+    document.getElementById('btnShowResult').disabled = true;
     document.getElementById('quizResult').classList.remove('active');
-    document.querySelector('.quiz-progress').style.display = '';
-    document.querySelector('.step-dots').style.display = '';
-    document.getElementById('step0').classList.add('active');
-    updateProgress(0);
+    document.querySelector('.quiz-progress').style.display = 'none';
+    document.querySelector('.step-dots').style.display = 'none';
+    document.getElementById('stepName').classList.add('active');
     document.getElementById('quiz').scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 </script>
