@@ -568,6 +568,12 @@
     }
 
     .quiz-input::placeholder { color: #55556a; }
+    .quiz-error {
+      font-size: 0.8rem;
+      color: var(--coral);
+      margin-top: 0.4rem;
+      animation: fadeUp 0.2s ease both;
+    }
 
     /* Подсказки-чипы */
     .chips {
@@ -885,6 +891,18 @@
       Структурированная программа, которая проводит через выявление всех трёх элементов
       и показывает точку их пересечения — место, откуда начинается осознанный путь.
     </p>
+
+    <div class="cta-wrap" style="margin-top:2.5rem;">
+      <a class="cta-btn" href="#quiz" onclick="document.getElementById('quiz').scrollIntoView({behavior:'smooth'});return false;">
+        <svg viewBox="0 0 24 24" fill="currentColor" style="width:20px;height:20px;">
+          <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+        </svg>
+        Найти свою точку силы
+      </a>
+      <a class="cta-link" href="https://t.me/aleks33375" target="_blank" rel="noopener">
+        Написать напрямую → @aleks33375
+      </a>
+    </div>
 
   </div>
 </section>
@@ -1468,11 +1486,24 @@
       const targetId = chip.dataset.target;
       const input = document.getElementById(targetId);
       const val = chip.textContent.trim();
-      if (input.value && !input.value.endsWith(', ') && !input.value.endsWith('\n')) {
-        input.value += ', ';
+      if (chip.classList.contains('selected')) {
+        let v = input.value;
+        if (v.includes(', ' + val)) {
+          v = v.replace(', ' + val, '');
+        } else if (v.includes(val + ', ')) {
+          v = v.replace(val + ', ', '');
+        } else {
+          v = v.replace(val, '');
+        }
+        input.value = v.trim();
+        chip.classList.remove('selected');
+      } else {
+        if (input.value && !input.value.endsWith(', ') && !input.value.endsWith('\n')) {
+          input.value += ', ';
+        }
+        input.value += val;
+        chip.classList.add('selected');
       }
-      input.value += val;
-      chip.classList.toggle('selected');
       input.focus();
     });
   });
@@ -1493,12 +1524,27 @@
     }
   }
 
+  function showError(input) {
+    input.style.borderColor = 'rgba(217,112,112,0.6)';
+    input.focus();
+    let err = input.nextElementSibling;
+    if (!err || !err.classList.contains('quiz-error')) {
+      err = document.createElement('p');
+      err.classList.add('quiz-error');
+      input.parentNode.insertBefore(err, input.nextSibling);
+    }
+    err.textContent = 'Напиши хотя бы пару слов — или выбери из подсказок выше';
+    clearTimeout(input._errTimer);
+    input._errTimer = setTimeout(() => {
+      input.style.borderColor = '';
+      if (err.parentNode) err.parentNode.removeChild(err);
+    }, 2500);
+  }
+
   function nextStep(current) {
     const input = document.getElementById('input' + current);
     if (!input.value.trim()) {
-      input.style.borderColor = 'rgba(217,112,112,0.6)';
-      input.focus();
-      setTimeout(() => { input.style.borderColor = ''; }, 1500);
+      showError(input);
       return;
     }
     document.getElementById('step' + current).classList.remove('active');
@@ -1521,10 +1567,7 @@
     const v2 = document.getElementById('input2').value.trim();
 
     if (!v2) {
-      const input = document.getElementById('input2');
-      input.style.borderColor = 'rgba(217,112,112,0.6)';
-      input.focus();
-      setTimeout(() => { input.style.borderColor = ''; }, 1500);
+      showError(document.getElementById('input2'));
       return;
     }
 
