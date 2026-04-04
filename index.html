@@ -108,7 +108,7 @@
       z-index: 0;
       overflow: hidden;
     }
-    .blob { position: absolute; border-radius: 50%; }
+    .blob { position: absolute; border-radius: 50%; will-change: transform; }
     .blob-1 {
       width: 600px; height: 600px;
       background: var(--coral);
@@ -254,9 +254,9 @@
       border: 1px solid rgba(255,255,255,0.07);
       backdrop-filter: blur(8px);
       border-radius: 20px; padding: 2rem;
-      transition: transform 0.3s, box-shadow 0.3s, border-color 0.3s;
+      transition: transform 0.35s cubic-bezier(0.23,1,0.32,1),
+                  box-shadow 0.35s ease, border-color 0.35s ease;
     }
-    .card:hover { transform: translateY(-4px); }
 
     /* ================================
        NAV
@@ -813,10 +813,6 @@
     }
 
     /* Enhanced card hover — lift + glow + border */
-    .card {
-      transition: transform 0.35s cubic-bezier(0.23,1,0.32,1),
-                  box-shadow 0.35s ease, border-color 0.35s ease;
-    }
     .card:hover { transform: translateY(-8px); }
 
     .problem-card:hover {
@@ -852,7 +848,7 @@
       box-shadow: 0 0 20px rgba(217,112,112,0.15);
     }
 
-    /* Shimmer on section labels */
+    /* Shimmer on section labels — только при появлении в viewport */
     .section-label {
       position: relative; overflow: hidden;
     }
@@ -862,8 +858,10 @@
       width: 60%; height: 100%;
       background: linear-gradient(90deg, transparent,
                   rgba(255,255,255,0.35), transparent);
-      animation: shimmer 3.5s ease-in-out infinite 0.5s;
       pointer-events: none;
+    }
+    .section-label.shimmer-active::after {
+      animation: shimmer 0.9s ease-out forwards;
     }
     @keyframes shimmer {
       0%   { left: -100%; }
@@ -1999,7 +1997,8 @@
     if (y < h * 1.2) {
       if (heroText) {
         heroText.style.transform = `translateY(${y * 0.14}px)`;
-        heroText.style.opacity   = String(Math.max(0, 1 - y / (h * 0.75)));
+        /* opacity падает до 0.2 при прокрутке на 1.5 высоты экрана — текст остаётся читаемым */
+        heroText.style.opacity = String(Math.max(0.2, 1 - y / (h * 1.5)));
       }
       if (heroVisual) {
         heroVisual.style.transform = `translateY(${y * 0.07}px)`;
@@ -2070,6 +2069,17 @@
   }, { threshold: 0.35 });
 
   allSections.forEach(s => navIO.observe(s));
+
+  // === SHIMMER — срабатывает один раз при появлении ===
+  const shimmerIO = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('shimmer-active');
+        shimmerIO.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.5 });
+  document.querySelectorAll('.section-label').forEach(el => shimmerIO.observe(el));
 
   // === INLINE CTA ENTRANCE PULSE ===
   const inlineCta = document.querySelector('.inline-cta');
@@ -2237,6 +2247,21 @@
   .form-success p { color: var(--muted); margin-bottom: 1.25rem; font-size: 0.95rem; }
 
   @media (max-width: 600px) { .form-row { grid-template-columns: 1fr; } }
+
+  /* === ДОСТУПНОСТЬ: prefers-reduced-motion === */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+    /* Сохраняем только opacity для плавного появления — без смещения */
+    .animate-in.visible {
+      animation: none;
+      opacity: 1;
+    }
+    .hero-illustration { animation: none; }
+  }
 </style>
 <!-- Кнопка «наверх» -->
 <button class="back-to-top" id="backToTop" aria-label="Наверх">
