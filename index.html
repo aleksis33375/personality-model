@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Алексей Тарасенко — Сайты и AI-агенты для малого бизнеса</title>
+  <title>Тарасенко Алексей — Сайты и AI-агенты для малого бизнеса</title>
   <meta name="description" content="Строю сайты, веб-приложения и AI-агентов для малого бизнеса и стартапов. 40+ проектов, 5 лет опыта. Напрямую, без посредников. Пишите в Telegram.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -32,10 +32,7 @@
 
     body {
       font-family: 'Manrope', sans-serif;
-      background:
-        linear-gradient(rgba(8,8,16,0.6), rgba(8,8,16,0.6)),
-        url('RR-v-jan-2019-135.jpg') center / cover fixed;
-      background-color: var(--dark);
+      background: var(--dark);
       color: var(--text);
       font-size: var(--body);
       line-height: 1.6;
@@ -313,6 +310,7 @@
       color: var(--muted); transition: color 0.2s;
     }
     .nav-links a:hover { color: var(--text); }
+    .nav-links .btn-primary { color: white; }
 
     /* Burger */
     .burger {
@@ -981,7 +979,7 @@
   <div class="container nav-inner">
     <a href="#" class="nav-logo">
       <div class="nav-logo-mark">АТ</div>
-      <span class="logo-name">Алексей Тарасенко</span>
+      <span class="logo-name">Тарасенко Алексей</span>
       <div class="status-badge">
         <div class="status-dot"></div>
         Беру проекты
@@ -1879,7 +1877,7 @@
 ================================ -->
 <footer>
   <div class="container footer-inner">
-    <p class="footer-copy">© 2026 Алексей Тарасенко. Все права защищены.</p>
+    <p class="footer-copy">© 2026 Тарасенко Алексей. Все права защищены.</p>
     <div class="footer-links">
       <a href="https://t.me/aleks33375" target="_blank" rel="noopener">Telegram</a>
       <a href="https://github.com/aleksis33375" target="_blank" rel="noopener">GitHub</a>
@@ -2362,6 +2360,96 @@
           stroke-linecap="round" stroke-linejoin="round"/>
   </svg>
 </button>
+
+<!-- Star canvas background -->
+<canvas id="starCanvas" style="
+  position:fixed; inset:0; width:100%; height:100%;
+  z-index:0; pointer-events:none;
+"></canvas>
+
+<script>
+(function(){
+  const canvas = document.getElementById('starCanvas');
+  const ctx = canvas.getContext('2d');
+
+  function resize() {
+    canvas.width  = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  /* Генерируем звёзды один раз */
+  const STARS = [];
+  const COUNT = 280;
+  for (let i = 0; i < COUNT; i++) {
+    const r = Math.random();
+    STARS.push({
+      x:    Math.random(),
+      y:    Math.random(),
+      size: r < 0.06 ? 2.8 + Math.random() * 1.4   // крупные с glow
+          : r < 0.25 ? 1.2 + Math.random() * 0.8   // средние
+          :            0.4 + Math.random() * 0.6,   // мелкие
+      glow: r < 0.06,
+      alpha: 0.55 + Math.random() * 0.45,
+      twinkleSpeed: 0.004 + Math.random() * 0.008,
+      twinklePhase: Math.random() * Math.PI * 2,
+    });
+  }
+
+  let frame = 0;
+  function draw() {
+    const W = canvas.width;
+    const H = canvas.height;
+
+    /* Фон: тёмно-синий градиент как на фото */
+    const bg = ctx.createLinearGradient(0, 0, 0, H);
+    bg.addColorStop(0,   '#080d18');
+    bg.addColorStop(0.5, '#0a1020');
+    bg.addColorStop(1,   '#080810');
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    /* Маска rgba(8,8,16,0.6) — та же что была поверх фото */
+    ctx.fillStyle = 'rgba(8,8,16,0.55)';
+    ctx.fillRect(0, 0, W, H);
+
+    /* Звёзды */
+    frame++;
+    for (const s of STARS) {
+      const twinkle = s.alpha + Math.sin(frame * s.twinkleSpeed + s.twinklePhase) * 0.18;
+      const alpha   = Math.min(1, Math.max(0.1, twinkle));
+      const sx = s.x * W;
+      const sy = s.y * H;
+
+      if (s.glow) {
+        /* Мягкое свечение для крупных звёзд */
+        const grd = ctx.createRadialGradient(sx, sy, 0, sx, sy, s.size * 5);
+        grd.addColorStop(0, `rgba(200,220,255,${alpha * 0.5})`);
+        grd.addColorStop(1, 'rgba(200,220,255,0)');
+        ctx.beginPath();
+        ctx.arc(sx, sy, s.size * 5, 0, Math.PI * 2);
+        ctx.fillStyle = grd;
+        ctx.fill();
+      }
+
+      ctx.beginPath();
+      ctx.arc(sx, sy, s.size, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(220,230,255,${alpha})`;
+      ctx.fill();
+    }
+
+    requestAnimationFrame(draw);
+  }
+
+  /* Останавливаем анимацию если prefers-reduced-motion */
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    draw(); /* один кадр */
+  } else {
+    draw();
+  }
+})();
+</script>
 
 </body>
 </html>
