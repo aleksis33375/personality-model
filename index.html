@@ -32,7 +32,10 @@
 
     body {
       font-family: 'Manrope', sans-serif;
-      background: var(--dark);
+      background:
+        linear-gradient(rgba(8,8,16,0.6), rgba(8,8,16,0.6)),
+        url('RR-v-jan-2019-135.jpg') center / cover fixed;
+      background-color: var(--dark);
       color: var(--text);
       font-size: var(--body);
       line-height: 1.6;
@@ -404,7 +407,7 @@
     /* ================================
        PROBLEM
     ================================ */
-    #problem { background: var(--dark2); }
+    #problem { background: rgba(14,14,26,0.93); }
     .problem-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -482,7 +485,7 @@
     /* ================================
        PROCESS — timeline
     ================================ */
-    #process { background: var(--dark2); }
+    #process { background: rgba(14,14,26,0.93); }
     .timeline {
       display: grid;
       grid-template-columns: repeat(5,1fr);
@@ -634,7 +637,7 @@
     /* ================================
        REVIEWS
     ================================ */
-    #reviews { background: var(--dark2); }
+    #reviews { background: rgba(14,14,26,0.93); }
     .reviews-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
@@ -712,7 +715,7 @@
     /* ================================
        FINAL CTA
     ================================ */
-    #contact { background: var(--dark2); text-align: center; }
+    #contact { background: rgba(14,14,26,0.93); text-align: center; }
     .cta-box { max-width: 640px; margin: 0 auto; }
     .cta-box h2 {
       font-size: var(--h2); font-weight: 800; margin-bottom: 1rem;
