@@ -988,6 +988,7 @@
 
 <!-- Mobile menu -->
 <div class="mobile-menu" id="mobileMenu">
+  <button class="mobile-menu-close" id="mobileClose" aria-label="Закрыть">✕</button>
   <a href="#services" class="mobile-link">Услуги</a>
   <a href="#cases"    class="mobile-link">Кейсы</a>
   <a href="#about"    class="mobile-link">Обо мне</a>
@@ -1841,6 +1842,10 @@
            target="_blank" rel="noopener">
           Написать в Telegram →
         </a>
+        <button class="btn btn-secondary" id="formReset"
+                style="margin-top:0.75rem;width:100%;justify-content:center">
+          Отправить ещё раз
+        </button>
       </div>
     </div>
   </div>
@@ -1894,22 +1899,19 @@
     });
   }
 
-  // === SCROLL PROGRESS ===
+  // Переменные для единого scroll-обработчика (#18)
   const bar = document.getElementById('progress-bar');
-  window.addEventListener('scroll', () => {
-    const total = document.body.scrollHeight - window.innerHeight;
-    bar.style.transform = `scaleX(${total > 0 ? window.scrollY / total : 0})`;
-  }, { passive: true });
-
-  // === GLASSMORPHISM NAV ===
   const nav = document.getElementById('nav');
-  window.addEventListener('scroll', () => {
-    nav.classList.toggle('scrolled', window.scrollY > 80);
-  }, { passive: true });
 
   // === BURGER MENU ===
   const burger     = document.getElementById('burger');
   const mobileMenu = document.getElementById('mobileMenu');
+
+  function closeMobileMenu() {
+    mobileMenu.classList.remove('open');
+    burger.classList.remove('open');
+    document.body.style.overflow = '';
+  }
 
   burger.addEventListener('click', () => {
     const open = mobileMenu.classList.toggle('open');
@@ -1917,13 +1919,22 @@
     document.body.style.overflow = open ? 'hidden' : '';
   });
 
+  // Закрытие по пункту меню
   mobileMenu.querySelectorAll('a').forEach(link => {
-    link.addEventListener('click', () => {
-      mobileMenu.classList.remove('open');
-      burger.classList.remove('open');
-      document.body.style.overflow = '';
-    });
+    link.addEventListener('click', closeMobileMenu);
   });
+
+  // Закрытие по тапу вне меню (#16)
+  document.addEventListener('pointerdown', e => {
+    if (mobileMenu.classList.contains('open') &&
+        !mobileMenu.contains(e.target) &&
+        !burger.contains(e.target)) {
+      closeMobileMenu();
+    }
+  });
+
+  // Закрытие кнопкой ✕ (#17)
+  document.getElementById('mobileClose')?.addEventListener('click', closeMobileMenu);
 
   // === INTERSECTION OBSERVER (fadeUp) ===
   const io = new IntersectionObserver(entries => {
@@ -1991,20 +2002,7 @@
   const heroVisual = document.querySelector('.hero-visual');
   const heroSection = document.getElementById('hero');
 
-  window.addEventListener('scroll', () => {
-    const y = window.scrollY;
-    const h = window.innerHeight;
-    if (y < h * 1.2) {
-      if (heroText) {
-        heroText.style.transform = `translateY(${y * 0.14}px)`;
-        /* opacity падает до 0.2 при прокрутке на 1.5 высоты экрана — текст остаётся читаемым */
-        heroText.style.opacity = String(Math.max(0.2, 1 - y / (h * 1.5)));
-      }
-      if (heroVisual) {
-        heroVisual.style.transform = `translateY(${y * 0.07}px)`;
-      }
-    }
-  }, { passive: true });
+  // (параллакс перенесён в единый scroll-обработчик ниже)
 
   // === 3D CARD TILT (desktop only) ===
   if (window.matchMedia('(pointer:fine)').matches) {
@@ -2041,12 +2039,18 @@
       const dur = 1400;
       const t0  = performance.now();
       el.classList.add('counted');
+      // Временно отключаем gradient (webkit-text-fill: transparent) — иначе цифры невидимы (#15)
+      el.style.webkitTextFillColor = '#e8e8f0';
       (function tick(now) {
         const p = Math.min((now - t0) / dur, 1);
         const e = 1 - Math.pow(1 - p, 3);      // ease-out-cubic
         el.textContent = Math.round(e * target) + suffix;
-        if (p < 1) requestAnimationFrame(tick);
-        else el.textContent = raw;
+        if (p < 1) {
+          requestAnimationFrame(tick);
+        } else {
+          el.textContent = raw;
+          el.style.webkitTextFillColor = ''; // восстанавливаем gradient
+        }
       })(t0);
       counterIO.unobserve(el);
     });
@@ -2097,25 +2101,62 @@
 
   // === BACK TO TOP ===
   const btt = document.getElementById('backToTop');
-  window.addEventListener('scroll', () => {
-    btt.classList.toggle('visible', window.scrollY > 500);
-  }, { passive: true });
   btt.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+
+  // Скрываем при открытой клавиатуре (#19)
+  document.querySelectorAll('input, textarea').forEach(f => {
+    f.addEventListener('focus', () => btt.classList.add('keyboard-open'));
+    f.addEventListener('blur',  () => btt.classList.remove('keyboard-open'));
+  });
+
+  // === ЕДИНЫЙ SCROLL (#18) ===
+  window.addEventListener('scroll', () => {
+    const y = window.scrollY;
+    const total = document.body.scrollHeight - window.innerHeight;
+    bar.style.transform = `scaleX(${total > 0 ? y / total : 0})`;
+    nav.classList.toggle('scrolled', y > 80);
+    btt.classList.toggle('visible', y > 500);
+    const h = window.innerHeight;
+    if (y < h * 1.2) {
+      if (heroText) {
+        heroText.style.transform = `translateY(${y * 0.14}px)`;
+        heroText.style.opacity = String(Math.max(0.2, 1 - y / (h * 1.5)));
+      }
+      if (heroVisual) heroVisual.style.transform = `translateY(${y * 0.07}px)`;
+    }
+  }, { passive: true });
 
   // === CONTACT FORM ===
   const contactForm = document.getElementById('contactForm');
   const formSuccess = document.getElementById('formSuccess');
 
   if (contactForm) {
+    // Хелперы для ошибок с текстом (#13)
+    function setFieldError(f, msg) {
+      f.classList.add('field-error');
+      let err = f.parentNode.querySelector('.field-error-msg');
+      if (!err) {
+        err = document.createElement('span');
+        err.className = 'field-error-msg';
+        f.parentNode.appendChild(err);
+      }
+      err.textContent = msg;
+    }
+    function clearFieldError(f) {
+      f.classList.remove('field-error');
+      f.parentNode.querySelector('.field-error-msg')?.remove();
+    }
+
     contactForm.addEventListener('submit', e => {
       e.preventDefault();
       let ok = true;
 
       contactForm.querySelectorAll('input, textarea').forEach(f => {
-        f.classList.remove('field-error');
-        if (!f.value.trim()) { f.classList.add('field-error'); ok = false; }
-        if (f.type === 'email' && f.value && !/.+@.+\..+/.test(f.value)) {
-          f.classList.add('field-error'); ok = false;
+        clearFieldError(f);
+        if (!f.value.trim()) {
+          setFieldError(f, 'Заполни это поле'); ok = false;
+        } else if (f.type === 'email' && !/.+@.+\..+/.test(f.value)) {
+          setFieldError(f, 'Введи корректный email'); ok = false;
         }
       });
       if (!ok) return;
@@ -2135,7 +2176,18 @@
     });
 
     contactForm.querySelectorAll('input, textarea').forEach(f => {
-      f.addEventListener('input', () => f.classList.remove('field-error'));
+      f.addEventListener('input', () => clearFieldError(f));
+    });
+
+    // Сброс формы после успеха (#14)
+    document.getElementById('formReset')?.addEventListener('click', () => {
+      contactForm.reset();
+      contactForm.removeAttribute('style');
+      contactForm.hidden = false;
+      formSuccess.hidden = true;
+      const btn = contactForm.querySelector('button[type="submit"]');
+      btn.textContent = 'Отправить заявку →';
+      btn.disabled = false;
     });
   }
 </script>
@@ -2215,6 +2267,22 @@
     border-color: rgba(217,112,112,0.7);
     animation: shake 0.35s ease;
   }
+  /* Текст ошибки под полем (#13) */
+  .field-error-msg {
+    font-size: 0.75rem; color: var(--coral);
+    font-weight: 600; margin-top: -0.2rem;
+  }
+  /* Кнопка ✕ в мобильном меню (#17) */
+  .mobile-menu-close {
+    position: absolute; top: 1.25rem; right: 1.5rem;
+    background: none; border: none; cursor: pointer;
+    color: var(--muted); font-size: 1.5rem; line-height: 1;
+    padding: 0.25rem 0.5rem;
+    transition: color 0.2s;
+  }
+  .mobile-menu-close:hover { color: var(--coral); }
+  /* Скрываем back-to-top когда открыта клавиатура (#19) */
+  .back-to-top.keyboard-open { opacity: 0; pointer-events: none; }
   @keyframes shake {
     0%,100% { transform: translateX(0); }
     25%      { transform: translateX(-6px); }
